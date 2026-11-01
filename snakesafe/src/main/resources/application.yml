@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: snakesafe
+  profiles:
+    default: demo
+  jpa:
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+  shutdown: graceful
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+# ---------------------------------------------------------------
+# The ONE place to rename the app, change numbers or switch modes.
+# Secrets come only from environment variables (never write them here).
+# ---------------------------------------------------------------
+app:
+  name: SnakeSafe
+  logo: /img/logo.svg
+  tagline: Fast help after a snakebite
+  emergency-number: "108"
+  poison-helpline: "1800-116-117"
+  verified-hours: 2
+  default-language: en
+  otp-mode: DEMO            # DEMO (fixed code 123456) | SMS
+  identify-mode: STUB       # STUB | AI
+  chat-mode: STUB           # STUB | AI
+  cancel-window-seconds: 5
+  no-reply-minutes: 2
+  log-chats: false
+  seed-sample-data: true
+  timezone: Asia/Kolkata
+  photo-storage: LOCAL      # LOCAL | SUPABASE
+  photo-dir: ./data/snake-photos
+  scheduler-enabled: true
+  jwt-secret: ${JWT_SECRET:snakesafe-demo-secret-please-change-this-before-real-use}
+  jwt-hours: 12
+  ai:
+    api-key: ${AI_API_KEY:}
+    model: claude-opus-5-5
+  supabase:
+    url: ${SUPABASE_URL:}
+    service-key: ${SUPABASE_SERVICE_KEY:}
+    bucket: snake-photos
+  limits:
+    chat-max-message-length: 500
+    chat-per-minute: 12
+    identify-per-minute: 6
+
+---
+spring:
+  config:
+    activate:
+      on-profile: demo
+  datasource:
+    url: jdbc:h2:mem:snakesafe;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+---
+spring:
+  config:
+    activate:
+      on-profile: supabase
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+app:
+  photo-storage: SUPABASE
+  jwt-secret: ${JWT_SECRET}
+  seed-sample-data: ${SEED_SAMPLE_DATA:false}

@@ -1,0 +1,8 @@
+target
+data
+src/main/java
+src/main/resources/application.yml
+src/main/resources/*.txt
+src/main/resources/first-aid.json
+src/test
+pom.xml

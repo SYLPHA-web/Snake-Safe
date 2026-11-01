@@ -1,0 +1,366 @@
+// All visible text lives here (English + Kannada). Missing Kannada falls back to English.
+import { store } from './util.js';
+
+const en = {
+  'lang.code': 'en',
+  'brand.region': 'Karnataka', 'brand.sub': 'Snakebite emergency help',
+  'nav.home': 'Home', 'nav.identify': 'Identify', 'nav.snakes': 'Snakes', 'nav.catchers': 'Catchers', 'nav.firstAid': 'First Aid', 'nav.hospitals': 'Hospitals',
+  'nav.emergency': 'Emergency', 'nav.profile': 'Profile', 'nav.sos': 'EMERGENCY SOS', 'nav.language': 'Change language',
+
+  'common.add': 'Add', 'common.allDistricts': 'All districts', 'common.call': 'Call', 'common.call108': 'Call 108', 'common.cancel': 'Cancel', 'common.close': 'Close',
+  'common.delete': 'Delete', 'common.directions': 'Directions', 'common.edit': 'Edit', 'common.home': 'Home', 'common.ok': 'OK',
+  'common.reminder': 'Treat every bite as an emergency.', 'common.required': 'This is required.', 'common.retry': 'Try again', 'common.save': 'Save', 'common.saved': 'Saved',
+
+  'err.title': 'Something went wrong', 'err.offlineTitle': 'You are offline', 'err.ERROR': 'Something went wrong. Please try again.',
+  'err.OFFLINE': 'No internet connection. First aid and the snake list still work. If someone was bitten, call 108.',
+  'err.LOCATION_OFF': 'We could not get your location. Turn on location, or choose a hospital yourself.',
+  'err.INVALID_LOCATION': 'That location is not valid.', 'err.INVALID_PHONE': 'Enter a valid phone number.', 'err.INVALID_CODE': 'That code is not right.',
+  'err.CODE_EXPIRED': 'That code has expired. Ask for a new code.', 'err.TOO_MANY_ATTEMPTS': 'Too many wrong tries. Ask for a new code.',
+  'err.RATE_LIMITED': 'Too many requests. Please wait a little and try again.', 'err.BAD_LOGIN': 'Wrong username or password.',
+  'err.UNAUTHORIZED': 'Please sign in to continue.', 'err.FORBIDDEN': 'You do not have access to this.', 'err.VALIDATION_ERROR': 'Please check what you entered.',
+  'err.NO_STOCK': 'This hospital has no antivenom stock. Please choose another hospital.', 'err.ALERT_NOT_FOUND': 'Alert not found.',
+  'err.INVALID_STATE': 'That is not possible right now.', 'err.FILE_TOO_LARGE': 'The photo is too large (maximum 5 MB).',
+  'err.UNSUPPORTED_IMAGE': 'Please use a JPG or PNG photo.', 'err.NOT_FOUND': 'Not found.', 'err.HOSPITAL_NOT_FOUND': 'Hospital not found.',
+  'err.CATCHER_NOT_FOUND': 'Snake catcher not found.', 'err.RESCUE_NOT_FOUND': 'Rescue request not found.', 'err.SNAKE_NOT_FOUND': 'Snake not found.',
+  'err.AI_ERROR': 'This feature is not available right now.', 'err.AI_NOT_CONFIGURED': 'This feature is not set up on this server.',
+  'err.MESSAGE_TOO_LONG': 'Your message is too long.', 'err.CONFLICT': 'This was changed at the same time. Please try again.',
+  'err.INTERNAL_ERROR': 'Something went wrong on our side.', 'err.USERNAME_TAKEN': 'That username is already used.', 'err.LIMIT_REACHED': 'You have reached the limit.',
+
+  'time.min': '{n} min ago', 'time.hour': '{n} h ago', 'time.day': '{n} d ago',
+  'stock.verified': 'Verified · {ago}', 'stock.unverified': 'Unverified · {ago}', 'stock.none': 'No stock', 'stock.outOfStock': 'Out of stock',
+  'stock.legendVerified': 'Verified', 'stock.legendUnverified': 'Unverified', 'stock.legendNone': 'No stock',
+  'level.plenty': 'Plenty', 'level.enough': 'Enough', 'level.low': 'Low', 'level.reported': 'Reported',
+
+  'home.live': 'Live', 'home.stripHospitals': '{n} hospitals with verified antivenom', 'home.stripVials': '{n} vials in verified stock', 'home.stripUpdated': 'Last stock update {ago}',
+  'home.noData': 'Live stock data is not available right now', 'home.chip': 'Snakebite help',
+  'home.h1': 'Snakebite? Get to the right hospital fast', 'home.safetyLabel': 'Safety first',
+  'home.safety': 'Treat every bite as an emergency. Stay calm, keep the bitten limb still, and go to a hospital now.',
+  'home.start': 'Start Emergency', 'home.startShort': 'Emergency', 'home.startShort2': 'Start Emergency', 'home.call': 'Call {n} Free Ambulance',
+  'home.ringUnit': 'Hospitals', 'home.ringTitle': 'Hospitals with verified antivenom', 'home.ringText': 'Stock counts as verified when hospital staff updated it in the last {h} hours.',
+  'home.toolkitEyebrow': 'Help when you need it', 'home.toolkitTitle': 'Emergency Help & Field Services',
+  'how.eyebrow': 'How it works', 'how.title': 'From one tap to the hospital in four steps',
+  'how.1.t': 'Tap Emergency', 'how.1.d': 'Tell us who was bitten. We find where you are.',
+  'how.2.t': 'We find the best hospital', 'how.2.d': 'The nearest hospital with verified antivenom stock.',
+  'how.3.t': 'Alert the hospital', 'how.3.d': 'You get {s} seconds to cancel. Then the hospital is told.',
+  'how.4.t': 'Hospital confirms', 'how.4.d': 'You get a call button and directions.',
+  'home.snakesChip': 'Know the danger', 'home.snakesTitle': 'Venomous snakes of Karnataka', 'home.snakesText': 'These four cause many bites. Treat every bite as an emergency, whatever the snake.',
+  'home.allSnakes': 'View all snakes', 'home.helpEyebrow': 'Poison helpline', 'home.helpTitle': 'Need to talk to someone?',
+  'home.helpText': 'Call the poison helpline for advice while you travel to a hospital.', 'home.helpSteps': 'First aid steps',
+
+  'tool.identify.tag': 'Photo', 'tool.identify.title': 'Identify Snake', 'tool.identify.text': 'Upload a photo taken from a safe distance and see possible matches. Results can be wrong.', 'tool.identify.btn': 'Open Scanner', 'tool.identify.foot': 'Photo is not kept',
+  'tool.hospitals.tag': 'Live stock', 'tool.hospitals.title': 'Nearby Hospitals', 'tool.hospitals.text': 'See hospitals near you, how many vials they have and when staff last checked.', 'tool.hospitals.btn': 'View Hospitals', 'tool.hospitals.foot': '{n} hospitals listed',
+  'tool.catchers.tag': 'Rescue', 'tool.catchers.title': 'Snake Catcher', 'tool.catchers.text': 'Ask a snake catcher near you to remove a snake from your home, farm or estate.', 'tool.catchers.btn': 'Find Catchers', 'tool.catchers.foot': 'Not medical help',
+  'tool.firstAid.tag': 'Works offline', 'tool.firstAid.title': 'First Aid Guide', 'tool.firstAid.text': 'Simple, safe steps to follow while you get to a hospital.', 'tool.firstAid.btn': 'Read Steps', 'tool.firstAid.foot': 'English & ಕನ್ನಡ',
+
+  'hosp.strip': 'Stock updated by hospital staff', 'hosp.stripRule': 'Verified means updated in the last {h} hours',
+  'hosp.title': 'Hospitals & Antivenom Stock', 'hosp.sub': 'Antivenom counts reported by hospital staff. Pick a hospital with verified stock, and call ahead if you can.',
+  'hosp.statVials': 'Vials in verified stock', 'hosp.statVerified': 'Hospitals verified', 'hosp.search': 'Search hospital, town or district',
+  'hosp.verifiedOnly': 'Verified stock only', 'hosp.useLocation': 'Use my location', 'hosp.locOn': 'Location on', 'hosp.sortedDistance': 'Sorted by distance', 'hosp.sortedName': 'Sorted by name',
+  'hosp.kmAway': '{n} km away', 'hosp.minsAway': '{n} mins away', 'hosp.eta': '{n} min', 'hosp.vials': '{n} vials',
+  'hosp.checkedByStaff': 'Checked by hospital staff', 'hosp.callFirst': 'Call to confirm before you go', 'hosp.chooseOther': 'Please choose another hospital', 'hosp.viewDetails': 'View hospital details',
+  'hosp.emptyTitle': 'No hospitals match', 'hosp.emptyText': 'Try turning off "Verified stock only" or clearing the search.',
+  'hosp.mapTitle': 'Hospital map', 'hosp.mapNote': 'Sample hospitals', 'hosp.freshChip': 'Stock check', 'hosp.freshTitle': 'How fresh is the stock?',
+  'hosp.freshText': 'Hospitals must update their count every {h} hours to stay verified.', 'hosp.freshUnit': 'Verified', 'hosp.freshLast': 'Latest staff update',
+  'hosp.onWayTitle': 'On your way?', 'hosp.onWayText': 'Call ahead while you travel. Keep the person calm and still, and keep the bitten limb still.',
+  'hosp.directLine': 'Hospital phone', 'hosp.stockTitle': 'Antivenom stock', 'hosp.stockSub': 'Reported by hospital staff', 'hosp.vialsInStock': 'vials in stock', 'hosp.barNote': 'Bar shows up to 30 vials',
+  'hosp.verifiedNote': 'Staff updated this count recently.', 'hosp.unverifiedNote': 'Staff have not updated this count recently. Call the hospital to check before you go.',
+  'hosp.noneNote': 'This hospital has no antivenom. Please choose another.',
+  'hosp.doText': 'Stay calm, keep the bitten limb still and lower than your heart, take off rings and tight items, and go by vehicle.',
+  'hosp.dontText': 'Do not wait for symptoms. Do not use home remedies. Do not try to catch the snake.',
+  'hosp.goTitle': 'Go to this hospital', 'hosp.goText': 'Alert {name} that you are on the way. You can cancel in the first seconds.', 'hosp.goNone': 'This hospital has no antivenom. Find another hospital.',
+  'hosp.startHere': 'Start emergency with this hospital', 'hosp.findOther': 'Find another hospital', 'hosp.directCall': 'Direct call', 'hosp.callAhead': 'Call {n} for an ambulance.',
+
+  'aid.do': 'Do', 'aid.dont': 'Do not', 'aid.chip': 'First aid', 'aid.intro': 'Follow these steps while you get to a hospital.',
+  'aid.offline': 'Saved on your phone: this page works without internet.', 'aid.stepsEyebrow': 'Safe steps', 'aid.stepsTitle': 'What to do right now',
+
+  'flow.step': 'Step {n} of {total}', 'flow.call': 'Call {n}', 'flow.exit': 'Exit', 'flow.activeAlert': 'You have an active alert. Tap to return',
+  'flow.chip': 'Snakebite emergency', 'flow.whoTitle': 'Who was bitten?', 'flow.whoSub': 'This helps the hospital get ready.',
+  'flow.self': 'Me', 'flow.selfSub': 'I was bitten', 'flow.other': 'Someone else', 'flow.otherSub': 'An adult', 'flow.child': 'A child', 'flow.childSub': 'Under 12',
+  'flow.details': 'Details (optional)', 'flow.name': 'Name', 'flow.age': 'Age', 'flow.ageBad': 'Enter an age between 0 and 120.', 'flow.findHospital': 'Find nearest hospital',
+  'flow.locating': 'Finding your location…', 'flow.locatingSub': 'Allow location when your phone asks. Call 108 now if you can.',
+  'flow.bestBanner': 'Nearest hospital with verified antivenom', 'flow.chosenBanner': 'Hospital you chose', 'flow.nearestVerified': 'Nearest verified', 'flow.yourChoice': 'Your choice',
+  'flow.tileDistance': 'Distance & time', 'flow.tileStock': 'Antivenom stock', 'flow.tilePhone': 'Hospital phone', 'flow.tilePhoneSub': 'Tap to call',
+  'flow.unverifiedNote': 'Stock here is unverified: call before you go.',
+  'flow.sendNote': 'When you send the alert you have {s} seconds to cancel. After that the hospital is told you are coming and will confirm.',
+  'flow.send': 'Send alert to hospital', 'flow.callHospital': 'Call hospital', 'flow.another': 'Choose another hospital ({n} nearby)', 'flow.choose': 'Choose', 'flow.alertThis': 'Alert this hospital',
+  'flow.whileTravel': 'While you travel', 'flow.aid1': 'Keep the bitten limb still and lower than your heart.', 'flow.aid2': 'Take off rings, watches and tight items.', 'flow.aid3': 'Go by vehicle. Do not walk if you can avoid it.',
+  'flow.altTitle': 'Other hospitals nearby', 'flow.noStockTitle': 'No antivenom at this hospital', 'flow.noStockText': 'Please choose another hospital below, and call 108.',
+  'flow.noVerifiedTitle': 'No hospital nearby has verified stock', 'flow.noVerifiedText': 'Call {n} now. The hospitals below may still have antivenom: call one before you go.',
+  'flow.otherOptions': 'Other options', 'flow.noOthers': 'No other hospitals are available right now. Call 108.',
+  'flow.locOffTitle': 'We cannot find your location', 'flow.locDenied': 'Location is blocked for this site. Allow it in your browser settings, or call a hospital below.',
+  'flow.locOffText': 'Turn on location and try again, or call a hospital below before you go.', 'flow.tryAgain': 'Try again', 'flow.callAhead': 'Call a hospital before you go',
+  'flow.cdTitle': 'Sending to {name}…', 'flow.cdText': 'Nothing is sent until the timer ends. You can still cancel.', 'flow.seconds': 'seconds', 'flow.cancel': 'Cancel alert',
+  'flow.waitSub': '{name} will confirm. Keep going to the hospital.', 'flow.replyIn': 'Waiting for reply: {time}', 'flow.cancelAlert': 'Cancel alert',
+  'flow.cancelAsk': 'The hospital will be told you are no longer coming. Cancel the alert?', 'flow.cancelYes': 'Yes, cancel',
+  'flow.confirmedSub': '{name} is ready for you. Go there now.', 'flow.openDirections': 'Open directions', 'flow.reached': 'I have reached the hospital',
+  'flow.tryOthersText': 'Choose another hospital below, and call {n} if you need an ambulance.', 'flow.cancelledSub': 'No hospital will be waiting for you. If someone was bitten, start again.',
+  'flow.startAgain': 'Start again', 'flow.arrivedSub': 'Thank you. Tell the staff at once that you were bitten by a snake.',
+  'flow.leaveTitle': 'Leave this screen?', 'flow.leaveText': 'Your alert is still active. You can come back to it from the top bar.', 'flow.leave': 'Leave',
+  'alert.waiting': 'The hospital will confirm', 'alert.confirmed': 'Antivenom available (confirmed {time})', 'alert.declined': 'This hospital cannot take you now',
+  'alert.noReply': 'No reply from the hospital', 'alert.cancelled': 'Alert cancelled', 'alert.arrived': 'You have reached the hospital',
+
+  'snakes.eyebrow': 'Species guide', 'snakes.title': 'Snakes of Karnataka', 'snakes.sub': 'Learn to recognise common snakes. Never go close to a snake to check it.',
+  'snakes.search': 'Search by name', 'snakes.all': 'All', 'snakes.filter': 'Filter by venom', 'snakes.anySnake': 'This is true for every snake, venomous or not.',
+  'snakes.emptyTitle': 'No snakes found', 'snakes.emptyText': 'Try a different search or district.',
+  'snake.venomous': 'Venomous', 'snake.nonVenomous': 'Not venomous', 'snake.venomousFull': 'Venomous', 'snake.nonVenomousFull': 'Not venomous (can still bite)',
+  'snake.status': 'Venom', 'snake.where': 'Found in', 'snake.statewide': 'All districts', 'snake.nDistricts': '{n} districts',
+  'snake.biteTitle': 'Someone was bitten?', 'snake.biteText': 'Do not wait. Stay calm, keep the limb still and get to a hospital.', 'snake.dial': 'Dial {n} Direct',
+  'snake.about': 'About this snake', 'snake.habitat': 'Where it lives', 'snake.districts': 'Districts', 'snake.lookalikeTitle': 'Do not rely on looks',
+  'snake.lookalikeText': 'Many snakes look alike, and some harmless snakes look like dangerous ones. If you are bitten, treat it as an emergency whatever the snake.',
+  'snake.back': 'Back to all snakes', 'snake.rescuer': 'Request a snake catcher',
+
+  'catch.eyebrow': 'Snake rescue', 'catch.title': 'Snake Catchers', 'catch.sub': 'Contact a snake catcher near you to remove a snake safely.',
+  'catch.notMedical': 'Snake catchers cannot give medical help. If someone is bitten, call {n} now.', 'catch.nearest': 'Nearest first', 'catch.request': 'Request rescue', 'catch.callDirect': 'Call catcher',
+  'catch.emptyTitle': 'No catchers found', 'catch.emptyText': 'Try another district.', 'catch.formTitle': 'Request a rescue', 'catch.yourPhone': 'Your phone number',
+  'catch.notes': 'Notes (optional)', 'catch.notesHint': 'Where is the snake? What does it look like?', 'catch.locAttached': 'Your location will be shared',
+  'catch.locNeeded': 'We need your location so the catcher can find you', 'catch.send': 'Send request',
+  'rescue.title': 'Rescue request', 'rescue.REQUESTED': 'Request sent', 'rescue.ACCEPTED': 'Catcher is coming', 'rescue.DONE': 'Rescue done', 'rescue.sub': '{name} has been asked to help.',
+  'rescue.REQUESTED.short': 'Sent', 'rescue.ACCEPTED.short': 'On the way', 'rescue.DONE.short': 'Done',
+
+  'id.bannerTitle': 'Was someone bitten? Every minute counts.', 'id.bannerText': 'Do not spend time on photos. Keep the limb still and get to a hospital now.',
+  'id.eyebrow': 'Photo check', 'id.title': 'Identify a snake', 'id.ready': 'Ready', 'id.drop': 'Take a photo or drag one here',
+  'id.dropSub': 'Photograph the whole snake from a safe distance of 3 metres or more. Do not go closer.', 'id.camera': 'Open Camera', 'id.upload': 'Upload File',
+  'id.distance': 'Keep at least 3 metres away. Use zoom instead of stepping closer.', 'id.analysing': 'Looking at your photo…', 'id.results': 'Possible matches',
+  'id.demo': 'Demo results: sample guesses only', 'id.noGuess': 'We could not tell what this is. Try a clearer photo.', 'id.readMore': 'Read more', 'id.another': 'Try another photo',
+  'id.disclaimer': 'This may be wrong.', 'id.unreadable': 'We could not read that photo.', 'id.safetyTitle': 'Stay safe',
+  'id.safe1': 'Stop moving and step back slowly.', 'id.safe2': 'Keep children and pets away.', 'id.safe3': 'Do not touch, trap or throw things at the snake.', 'id.safe4': 'Stay where you can see it and call a snake catcher.',
+  'id.commonTitle': 'Common snakes', 'id.browse': 'Browse all snakes', 'id.v.YES': 'Venomous', 'id.v.NO': 'Not venomous', 'id.v.UNSURE': 'Not sure',
+
+  'login.title': 'Sign in', 'login.sub': 'Sign in with your phone number to save family details and contacts.', 'login.phone': 'Phone number', 'login.send': 'Send code',
+  'login.guest': 'You do not need to sign in to ask for emergency help.', 'login.codeTitle': 'Enter your code', 'login.codeSub': 'We sent a 6-digit code to {phone}.',
+  'login.demoHint': 'Demo mode: the code is 123456', 'login.code': '6-digit code', 'login.codeBad': 'Enter the 6-digit code.', 'login.verify': 'Verify and sign in',
+  'login.change': 'Change number', 'login.resend': 'Resend code', 'login.sent': 'A new code was sent.', 'login.welcome': 'Signed in',
+
+  'profile.noName': 'Your profile', 'profile.language': 'Language', 'profile.logout': 'Sign out', 'profile.loggedOut': 'Signed out', 'profile.family': 'Family members',
+  'profile.familySub': 'Saved details help you start an alert faster.', 'profile.noFamily': 'No family members saved yet.', 'profile.years': '{n} yrs', 'profile.allergies': 'Allergies',
+  'profile.relation': 'Relation', 'profile.notes': 'Notes', 'profile.addMember': 'Add family member', 'profile.editMember': 'Edit family member', 'profile.contacts': 'Emergency contacts',
+  'profile.contactsSub': 'People you can call quickly.', 'profile.noContacts': 'No contacts saved yet.', 'profile.addContact': 'Add contact', 'profile.editContact': 'Edit contact',
+  'profile.deleteAsk': 'This will remove it from your profile.',
+
+  'staff.title': 'Staff portal', 'staff.portal': 'Hospital staff portal', 'staff.signIn': 'Staff sign in', 'staff.signInSub': 'Sign in to update antivenom stock and answer incoming alerts.',
+  'staff.username': 'Username', 'staff.password': 'Password', 'staff.signInBtn': 'Sign in', 'staff.demoHint': 'Demo: staff-bengaluru / staff123', 'staff.desk': 'Emergency desk', 'staff.logout': 'Sign out',
+  'staff.stockTitle': 'Antivenom stock', 'staff.stockSub': 'Update your count at least every {h} hours to stay Verified.', 'staff.vials': 'Vials', 'staff.update': 'Update stock now',
+  'staff.updateHelp': 'Saving stamps the current time and shows your stock as Verified.', 'staff.updated': 'Stock updated', 'staff.vialsBad': 'Enter a whole number from 0 to 10000.',
+  'staff.incoming': 'Incoming alerts', 'staff.live': 'Live', 'staff.polling': 'Refreshing', 'staff.noneTitle': 'No alerts right now', 'staff.noneText': 'New alerts appear here at once, with a sound.',
+  'staff.recent': 'Recent', 'staff.accept': 'Accept', 'staff.decline': 'Decline', 'staff.declineTitle': 'Decline this alert', 'staff.reason': 'Reason (optional)', 'staff.reasonHint': 'For example: no doctor free',
+  'staff.onTheWay': 'Patient on the way', 'staff.arrivedBtn': 'Patient arrived', 'staff.away': '{km} km away · about {n} min', 'staff.replyIn': 'Reply within {time}', 'staff.newAlert': 'New alert',
+  'staff.st.PENDING_CANCEL': 'Waiting', 'staff.st.WAITING': 'Waiting for your reply', 'staff.st.CONFIRMED': 'Patient on the way', 'staff.st.DECLINED': 'Declined', 'staff.st.NO_REPLY': 'No reply',
+  'staff.st.CANCELLED': 'Cancelled by patient', 'staff.st.ARRIVED': 'Patient arrived',
+
+  'admin.title': 'Admin', 'admin.signIn': 'Admin sign in', 'admin.signInSub': 'Manage hospitals, staff, snakes and catchers.',
+  'admin.tab.hospitals': 'Hospitals', 'admin.tab.staff': 'Staff', 'admin.tab.snakes': 'Snakes', 'admin.tab.catchers': 'Catchers', 'admin.tab.alerts': 'Alerts', 'admin.tab.rescues': 'Rescues', 'admin.tab.photos': 'Photos',
+  'admin.col.name': 'Name', 'admin.col.district': 'District', 'admin.col.phone': 'Phone', 'admin.col.vials': 'Stock', 'admin.col.username': 'Username', 'admin.col.hospital': 'Hospital', 'admin.col.active': 'Active',
+  'admin.col.nameEn': 'English name', 'admin.col.nameKn': 'Kannada name', 'admin.col.scientificName': 'Scientific name', 'admin.col.venomous': 'Venomous', 'admin.col.status': 'Status',
+  'admin.col.patientType': 'Patient', 'admin.col.created': 'Created', 'admin.col.sent': 'Sent', 'admin.col.confirmed': 'Confirmed', 'admin.col.arrived': 'Arrived', 'admin.col.catcher': 'Catcher',
+  'admin.col.notes': 'Notes', 'admin.col.species': 'Species', 'admin.col.source': 'Source', 'admin.col.verifiedBy': 'Verified by',
+  'admin.f.name': 'Name', 'admin.f.district': 'District', 'admin.f.address': 'Address', 'admin.f.phone': 'Phone', 'admin.f.lat': 'Latitude', 'admin.f.lng': 'Longitude', 'admin.f.vials': 'Vials in stock',
+  'admin.f.active': 'Active', 'admin.f.username': 'Username', 'admin.f.password': 'Password (leave empty to keep)', 'admin.f.hospitalId': 'Hospital', 'admin.f.nameEn': 'English name',
+  'admin.f.nameKn': 'Kannada name', 'admin.f.scientificName': 'Scientific name', 'admin.f.venomous': 'Venomous', 'admin.f.description': 'Description', 'admin.f.habitat': 'Habitat',
+  'admin.f.districts': 'Districts (comma separated, or Statewide)', 'admin.f.imageUrl': 'Image path',
+  'admin.hide': 'Hide', 'admin.deactivate': 'Switch off', 'admin.verify': 'Verify', 'admin.export': 'Export CSV', 'admin.empty': 'Nothing here yet.', 'admin.confirmRemove': 'Are you sure?',
+
+  'foot.about': 'Fast help after a snakebite: find a hospital with verified antivenom, alert it, and get there.', 'foot.numbers': '24/7 helplines', 'foot.ambulance': 'Ambulance',
+  'foot.dial': 'Dial {n}', 'foot.poison': 'Poison helpline', 'foot.explore': 'Explore', 'foot.staff': 'Staff portal', 'foot.install': 'Install app',
+  'chat.title': 'Help chat', 'chat.sub': 'Snakes, first aid, hospitals and app help', 'chat.bite': 'Someone bitten?', 'chat.open': 'Open help chat',
+  'chat.hello': 'Hello! I can help with snakes, first aid steps, hospitals and this app. If someone was bitten, call 108 now.', 'chat.placeholder': 'Type your question', 'chat.send': 'Send',
+  'chat.s1': 'What should I do after a bite?', 'chat.s2': 'How do I find a hospital?', 'chat.s3': 'How do I identify a snake?', 'chat.fallbackCall': 'If someone was bitten, call {n}.',
+  'offline.bar': 'You are offline. First aid and snakes still work. Call 108 for emergencies.', 'nf.title': 'Page not found', 'nf.text': 'This page does not exist.', 'map.label': 'Map of hospitals',
+};
+
+const kn = {
+  'lang.code': 'kn',
+  'brand.region': 'ಕರ್ನಾಟಕ', 'brand.sub': 'ಹಾವು ಕಡಿತ ತುರ್ತು ಸಹಾಯ',
+  'nav.home': 'ಮುಖಪುಟ', 'nav.identify': 'ಗುರುತಿಸಿ', 'nav.snakes': 'ಹಾವುಗಳು', 'nav.catchers': 'ಹಾವು ಹಿಡಿಯುವವರು', 'nav.firstAid': 'ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ', 'nav.hospitals': 'ಆಸ್ಪತ್ರೆಗಳು',
+  'nav.emergency': 'ತುರ್ತು', 'nav.profile': 'ಪ್ರೊಫೈಲ್', 'nav.sos': 'ತುರ್ತು ಸಹಾಯ', 'nav.language': 'ಭಾಷೆ ಬದಲಿಸಿ',
+
+  'common.add': 'ಸೇರಿಸಿ', 'common.allDistricts': 'ಎಲ್ಲಾ ಜಿಲ್ಲೆಗಳು', 'common.call': 'ಕರೆ ಮಾಡಿ', 'common.call108': '108 ಗೆ ಕರೆ ಮಾಡಿ', 'common.cancel': 'ರದ್ದುಮಾಡಿ', 'common.close': 'ಮುಚ್ಚಿ',
+  'common.delete': 'ಅಳಿಸಿ', 'common.directions': 'ದಾರಿ ತೋರಿಸಿ', 'common.edit': 'ಬದಲಿಸಿ', 'common.home': 'ಮುಖಪುಟ', 'common.ok': 'ಸರಿ',
+  'common.reminder': 'ಪ್ರತಿ ಹಾವು ಕಡಿತವನ್ನೂ ತುರ್ತು ಪರಿಸ್ಥಿತಿ ಎಂದು ಪರಿಗಣಿಸಿ.', 'common.required': 'ಇದು ಅಗತ್ಯ.', 'common.retry': 'ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ', 'common.save': 'ಉಳಿಸಿ', 'common.saved': 'ಉಳಿಸಲಾಗಿದೆ',
+
+  'err.title': 'ಏನೋ ತಪ್ಪಾಗಿದೆ', 'err.offlineTitle': 'ನೀವು ಆಫ್‌ಲೈನ್ ಇದ್ದೀರಿ', 'err.ERROR': 'ಏನೋ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
+  'err.OFFLINE': 'ಇಂಟರ್ನೆಟ್ ಇಲ್ಲ. ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ ಮತ್ತು ಹಾವುಗಳ ಪಟ್ಟಿ ಇನ್ನೂ ಕೆಲಸ ಮಾಡುತ್ತವೆ. ಹಾವು ಕಡಿದಿದ್ದರೆ 108 ಗೆ ಕರೆ ಮಾಡಿ.',
+  'err.LOCATION_OFF': 'ನಿಮ್ಮ ಸ್ಥಳ ಸಿಗಲಿಲ್ಲ. ಸ್ಥಳ ಆನ್ ಮಾಡಿ, ಅಥವಾ ನೀವೇ ಆಸ್ಪತ್ರೆ ಆರಿಸಿ.',
+  'err.INVALID_LOCATION': 'ಆ ಸ್ಥಳ ಸರಿಯಿಲ್ಲ.', 'err.INVALID_PHONE': 'ಸರಿಯಾದ ಫೋನ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ.', 'err.INVALID_CODE': 'ಆ ಕೋಡ್ ಸರಿಯಿಲ್ಲ.',
+  'err.CODE_EXPIRED': 'ಆ ಕೋಡ್‌ನ ಅವಧಿ ಮುಗಿದಿದೆ. ಹೊಸ ಕೋಡ್ ಕೇಳಿ.', 'err.TOO_MANY_ATTEMPTS': 'ತುಂಬಾ ತಪ್ಪು ಪ್ರಯತ್ನಗಳು. ಹೊಸ ಕೋಡ್ ಕೇಳಿ.',
+  'err.RATE_LIMITED': 'ತುಂಬಾ ವಿನಂತಿಗಳು. ಸ್ವಲ್ಪ ಕಾದು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.', 'err.BAD_LOGIN': 'ಬಳಕೆದಾರ ಹೆಸರು ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.',
+  'err.UNAUTHORIZED': 'ಮುಂದುವರಿಯಲು ಸೈನ್ ಇನ್ ಮಾಡಿ.', 'err.FORBIDDEN': 'ಇದಕ್ಕೆ ನಿಮಗೆ ಪ್ರವೇಶವಿಲ್ಲ.', 'err.VALIDATION_ERROR': 'ನೀವು ಬರೆದದ್ದನ್ನು ಪರಿಶೀಲಿಸಿ.',
+  'err.NO_STOCK': 'ಈ ಆಸ್ಪತ್ರೆಯಲ್ಲಿ ಪ್ರತಿವಿಷ ಇಲ್ಲ. ಬೇರೆ ಆಸ್ಪತ್ರೆ ಆರಿಸಿ.', 'err.ALERT_NOT_FOUND': 'ಎಚ್ಚರಿಕೆ ಸಿಗಲಿಲ್ಲ.',
+  'err.INVALID_STATE': 'ಈಗ ಅದು ಸಾಧ್ಯವಿಲ್ಲ.', 'err.FILE_TOO_LARGE': 'ಫೋಟೋ ತುಂಬಾ ದೊಡ್ಡದು (ಗರಿಷ್ಠ 5 MB).',
+  'err.UNSUPPORTED_IMAGE': 'JPG ಅಥವಾ PNG ಫೋಟೋ ಬಳಸಿ.', 'err.NOT_FOUND': 'ಸಿಗಲಿಲ್ಲ.', 'err.HOSPITAL_NOT_FOUND': 'ಆಸ್ಪತ್ರೆ ಸಿಗಲಿಲ್ಲ.',
+  'err.CATCHER_NOT_FOUND': 'ಹಾವು ಹಿಡಿಯುವವರು ಸಿಗಲಿಲ್ಲ.', 'err.RESCUE_NOT_FOUND': 'ರಕ್ಷಣಾ ವಿನಂತಿ ಸಿಗಲಿಲ್ಲ.', 'err.SNAKE_NOT_FOUND': 'ಹಾವು ಸಿಗಲಿಲ್ಲ.',
+  'err.AI_ERROR': 'ಈ ಸೌಲಭ್ಯ ಈಗ ಲಭ್ಯವಿಲ್ಲ.', 'err.AI_NOT_CONFIGURED': 'ಈ ಸರ್ವರ್‌ನಲ್ಲಿ ಈ ಸೌಲಭ್ಯ ಹೊಂದಿಸಿಲ್ಲ.',
+  'err.MESSAGE_TOO_LONG': 'ನಿಮ್ಮ ಸಂದೇಶ ತುಂಬಾ ಉದ್ದವಾಗಿದೆ.', 'err.CONFLICT': 'ಇದೇ ಸಮಯದಲ್ಲಿ ಬದಲಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
+  'err.INTERNAL_ERROR': 'ನಮ್ಮ ಕಡೆ ಏನೋ ತಪ್ಪಾಗಿದೆ.', 'err.USERNAME_TAKEN': 'ಆ ಬಳಕೆದಾರ ಹೆಸರು ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ.', 'err.LIMIT_REACHED': 'ನೀವು ಮಿತಿ ತಲುಪಿದ್ದೀರಿ.',
+
+  'time.min': '{n} ನಿಮಿಷದ ಹಿಂದೆ', 'time.hour': '{n} ಗಂಟೆ ಹಿಂದೆ', 'time.day': '{n} ದಿನದ ಹಿಂದೆ',
+  'stock.verified': 'ದೃಢೀಕೃತ · {ago}', 'stock.unverified': 'ದೃಢೀಕರಿಸಿಲ್ಲ · {ago}', 'stock.none': 'ದಾಸ್ತಾನು ಇಲ್ಲ', 'stock.outOfStock': 'ದಾಸ್ತಾನು ಖಾಲಿ',
+  'stock.legendVerified': 'ದೃಢೀಕೃತ', 'stock.legendUnverified': 'ದೃಢೀಕರಿಸಿಲ್ಲ', 'stock.legendNone': 'ದಾಸ್ತಾನು ಇಲ್ಲ',
+  'level.plenty': 'ಸಾಕಷ್ಟು', 'level.enough': 'ಸಾಕು', 'level.low': 'ಕಡಿಮೆ', 'level.reported': 'ವರದಿಯಾಗಿದೆ',
+
+  'home.live': 'ನೇರ', 'home.stripHospitals': 'ದೃಢೀಕೃತ ಪ್ರತಿವಿಷ ಇರುವ {n} ಆಸ್ಪತ್ರೆಗಳು', 'home.stripVials': 'ದೃಢೀಕೃತ ದಾಸ್ತಾನಿನಲ್ಲಿ {n} ವಯಲ್‌ಗಳು', 'home.stripUpdated': 'ಕೊನೆಯ ದಾಸ್ತಾನು ನವೀಕರಣ {ago}',
+  'home.noData': 'ನೇರ ದಾಸ್ತಾನು ಮಾಹಿತಿ ಈಗ ಲಭ್ಯವಿಲ್ಲ', 'home.chip': 'ಹಾವು ಕಡಿತ ಸಹಾಯ',
+  'home.h1': 'ಹಾವು ಕಡಿದಿದೆಯೇ? ಸರಿಯಾದ ಆಸ್ಪತ್ರೆಗೆ ಬೇಗ ತಲುಪಿ', 'home.safetyLabel': 'ಮೊದಲು ಸುರಕ್ಷತೆ',
+  'home.safety': 'ಪ್ರತಿ ಕಡಿತವನ್ನೂ ತುರ್ತು ಎಂದು ಪರಿಗಣಿಸಿ. ಶಾಂತವಾಗಿರಿ, ಕಡಿತಕ್ಕೊಳಗಾದ ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸಬೇಡಿ, ಈಗಲೇ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ.',
+  'home.start': 'ತುರ್ತು ಸೇವೆ ಪ್ರಾರಂಭಿಸಿ', 'home.startShort': 'ತುರ್ತು ಸೇವೆ', 'home.startShort2': 'ತುರ್ತು ಸೇವೆ ಪ್ರಾರಂಭಿಸಿ', 'home.call': '{n} ಉಚಿತ ಆಂಬ್ಯುಲೆನ್ಸ್‌ಗೆ ಕರೆ ಮಾಡಿ',
+  'home.ringUnit': 'ಆಸ್ಪತ್ರೆಗಳು', 'home.ringTitle': 'ದೃಢೀಕೃತ ಪ್ರತಿವಿಷ ಇರುವ ಆಸ್ಪತ್ರೆಗಳು', 'home.ringText': 'ಆಸ್ಪತ್ರೆ ಸಿಬ್ಬಂದಿ ಕಳೆದ {h} ಗಂಟೆಗಳಲ್ಲಿ ನವೀಕರಿಸಿದ ದಾಸ್ತಾನನ್ನು ದೃಢೀಕೃತ ಎನ್ನಲಾಗುತ್ತದೆ.',
+  'home.toolkitEyebrow': 'ಬೇಕಾದಾಗ ಸಹಾಯ', 'home.toolkitTitle': 'ತುರ್ತು ಸಹಾಯ ಮತ್ತು ಕ್ಷೇತ್ರ ಸೇವೆಗಳು',
+  'how.eyebrow': 'ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ', 'how.title': 'ಒಂದು ಒತ್ತುವಿಕೆಯಿಂದ ಆಸ್ಪತ್ರೆಯವರೆಗೆ ನಾಲ್ಕು ಹಂತಗಳಲ್ಲಿ',
+  'how.1.t': 'ತುರ್ತು ಬಟನ್ ಒತ್ತಿ', 'how.1.d': 'ಯಾರಿಗೆ ಕಡಿದಿದೆ ಎಂದು ತಿಳಿಸಿ. ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ನಾವು ಹುಡುಕುತ್ತೇವೆ.',
+  'how.2.t': 'ಉತ್ತಮ ಆಸ್ಪತ್ರೆ ಹುಡುಕುತ್ತೇವೆ', 'how.2.d': 'ದೃಢೀಕೃತ ಪ್ರತಿವಿಷ ದಾಸ್ತಾನು ಇರುವ ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆ.',
+  'how.3.t': 'ಆಸ್ಪತ್ರೆಗೆ ತಿಳಿಸಿ', 'how.3.d': 'ರದ್ದುಮಾಡಲು ನಿಮಗೆ {s} ಸೆಕೆಂಡ್ ಸಿಗುತ್ತದೆ. ನಂತರ ಆಸ್ಪತ್ರೆಗೆ ತಿಳಿಸಲಾಗುತ್ತದೆ.',
+  'how.4.t': 'ಆಸ್ಪತ್ರೆ ಖಚಿತಪಡಿಸುತ್ತದೆ', 'how.4.d': 'ಕರೆ ಬಟನ್ ಮತ್ತು ದಾರಿ ಸಿಗುತ್ತದೆ.',
+  'home.snakesChip': 'ಅಪಾಯ ತಿಳಿದುಕೊಳ್ಳಿ', 'home.snakesTitle': 'ಕರ್ನಾಟಕದ ವಿಷಕಾರಿ ಹಾವುಗಳು', 'home.snakesText': 'ಈ ನಾಲ್ಕು ಹಾವುಗಳು ಅನೇಕ ಕಡಿತಗಳಿಗೆ ಕಾರಣ. ಯಾವ ಹಾವಾದರೂ ಪ್ರತಿ ಕಡಿತವನ್ನೂ ತುರ್ತು ಎಂದು ಪರಿಗಣಿಸಿ.',
+  'home.allSnakes': 'ಎಲ್ಲಾ ಹಾವುಗಳನ್ನು ನೋಡಿ', 'home.helpEyebrow': 'ವಿಷ ಸಹಾಯವಾಣಿ', 'home.helpTitle': 'ಯಾರೊಂದಿಗಾದರೂ ಮಾತನಾಡಬೇಕೇ?',
+  'home.helpText': 'ಆಸ್ಪತ್ರೆಗೆ ಹೋಗುವಾಗ ಸಲಹೆಗಾಗಿ ವಿಷ ಸಹಾಯವಾಣಿಗೆ ಕರೆ ಮಾಡಿ.', 'home.helpSteps': 'ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ ಹಂತಗಳು',
+
+  'tool.identify.tag': 'ಫೋಟೋ', 'tool.identify.title': 'ಹಾವು ಗುರುತಿಸಿ', 'tool.identify.text': 'ಸುರಕ್ಷಿತ ದೂರದಿಂದ ತೆಗೆದ ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ, ಸಂಭಾವ್ಯ ಹೋಲಿಕೆಗಳನ್ನು ನೋಡಿ. ಫಲಿತಾಂಶ ತಪ್ಪಾಗಿರಬಹುದು.', 'tool.identify.btn': 'ಸ್ಕ್ಯಾನರ್ ತೆರೆಯಿರಿ', 'tool.identify.foot': 'ಫೋಟೋ ಉಳಿಸುವುದಿಲ್ಲ',
+  'tool.hospitals.tag': 'ನೇರ ದಾಸ್ತಾನು', 'tool.hospitals.title': 'ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆಗಳು', 'tool.hospitals.text': 'ನಿಮ್ಮ ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆಗಳು, ಎಷ್ಟು ವಯಲ್ ಇವೆ ಮತ್ತು ಸಿಬ್ಬಂದಿ ಕೊನೆಯ ಬಾರಿ ಯಾವಾಗ ಪರಿಶೀಲಿಸಿದರು ಎಂದು ನೋಡಿ.', 'tool.hospitals.btn': 'ಆಸ್ಪತ್ರೆಗಳನ್ನು ನೋಡಿ', 'tool.hospitals.foot': '{n} ಆಸ್ಪತ್ರೆಗಳು ಪಟ್ಟಿಯಲ್ಲಿವೆ',
+  'tool.catchers.tag': 'ರಕ್ಷಣೆ', 'tool.catchers.title': 'ಹಾವು ಹಿಡಿಯುವವರು', 'tool.catchers.text': 'ನಿಮ್ಮ ಮನೆ, ತೋಟ ಅಥವಾ ಎಸ್ಟೇಟ್‌ನಿಂದ ಹಾವನ್ನು ತೆಗೆಯಲು ಹತ್ತಿರದ ಹಾವು ಹಿಡಿಯುವವರನ್ನು ಕೇಳಿ.', 'tool.catchers.btn': 'ಹುಡುಕಿ', 'tool.catchers.foot': 'ವೈದ್ಯಕೀಯ ಸಹಾಯವಲ್ಲ',
+  'tool.firstAid.tag': 'ಆಫ್‌ಲೈನ್ ಕೆಲಸ ಮಾಡುತ್ತದೆ', 'tool.firstAid.title': 'ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ', 'tool.firstAid.text': 'ಆಸ್ಪತ್ರೆಗೆ ಹೋಗುವಾಗ ಪಾಲಿಸಬೇಕಾದ ಸರಳ, ಸುರಕ್ಷಿತ ಹಂತಗಳು.', 'tool.firstAid.btn': 'ಹಂತಗಳನ್ನು ಓದಿ', 'tool.firstAid.foot': 'English & ಕನ್ನಡ',
+
+  'hosp.strip': 'ಆಸ್ಪತ್ರೆ ಸಿಬ್ಬಂದಿ ನವೀಕರಿಸಿದ ದಾಸ್ತಾನು', 'hosp.stripRule': 'ದೃಢೀಕೃತ ಎಂದರೆ ಕಳೆದ {h} ಗಂಟೆಗಳಲ್ಲಿ ನವೀಕರಿಸಲಾಗಿದೆ',
+  'hosp.title': 'ಆಸ್ಪತ್ರೆಗಳು ಮತ್ತು ಪ್ರತಿವಿಷ ದಾಸ್ತಾನು', 'hosp.sub': 'ಆಸ್ಪತ್ರೆ ಸಿಬ್ಬಂದಿ ವರದಿ ಮಾಡಿದ ಪ್ರತಿವಿಷ ಸಂಖ್ಯೆ. ದೃಢೀಕೃತ ದಾಸ್ತಾನು ಇರುವ ಆಸ್ಪತ್ರೆ ಆರಿಸಿ, ಸಾಧ್ಯವಾದರೆ ಮೊದಲೇ ಕರೆ ಮಾಡಿ.',
+  'hosp.statVials': 'ದೃಢೀಕೃತ ದಾಸ್ತಾನಿನ ವಯಲ್‌ಗಳು', 'hosp.statVerified': 'ದೃಢೀಕೃತ ಆಸ್ಪತ್ರೆಗಳು', 'hosp.search': 'ಆಸ್ಪತ್ರೆ, ಊರು ಅಥವಾ ಜಿಲ್ಲೆ ಹುಡುಕಿ',
+  'hosp.verifiedOnly': 'ದೃಢೀಕೃತ ದಾಸ್ತಾನು ಮಾತ್ರ', 'hosp.useLocation': 'ನನ್ನ ಸ್ಥಳ ಬಳಸಿ', 'hosp.locOn': 'ಸ್ಥಳ ಆನ್ ಇದೆ', 'hosp.sortedDistance': 'ದೂರದ ಪ್ರಕಾರ ಜೋಡಣೆ', 'hosp.sortedName': 'ಹೆಸರಿನ ಪ್ರಕಾರ ಜೋಡಣೆ',
+  'hosp.kmAway': '{n} ಕಿ.ಮೀ ದೂರ', 'hosp.minsAway': '{n} ನಿಮಿಷ ದೂರ', 'hosp.eta': '{n} ನಿಮಿಷ', 'hosp.vials': '{n} ವಯಲ್‌ಗಳು',
+  'hosp.checkedByStaff': 'ಆಸ್ಪತ್ರೆ ಸಿಬ್ಬಂದಿ ಪರಿಶೀಲಿಸಿದ್ದಾರೆ', 'hosp.callFirst': 'ಹೋಗುವ ಮೊದಲು ಕರೆ ಮಾಡಿ ಖಚಿತಪಡಿಸಿ', 'hosp.chooseOther': 'ಬೇರೆ ಆಸ್ಪತ್ರೆ ಆರಿಸಿ', 'hosp.viewDetails': 'ಆಸ್ಪತ್ರೆಯ ವಿವರ ನೋಡಿ',
+  'hosp.emptyTitle': 'ಯಾವ ಆಸ್ಪತ್ರೆಯೂ ಹೊಂದುವುದಿಲ್ಲ', 'hosp.emptyText': '"ದೃಢೀಕೃತ ದಾಸ್ತಾನು ಮಾತ್ರ" ಆಫ್ ಮಾಡಿ ಅಥವಾ ಹುಡುಕಾಟ ತೆರವುಗೊಳಿಸಿ.',
+  'hosp.mapTitle': 'ಆಸ್ಪತ್ರೆ ನಕ್ಷೆ', 'hosp.mapNote': 'ಮಾದರಿ ಆಸ್ಪತ್ರೆಗಳು', 'hosp.freshChip': 'ದಾಸ್ತಾನು ಪರಿಶೀಲನೆ', 'hosp.freshTitle': 'ದಾಸ್ತಾನು ಎಷ್ಟು ಹೊಸದು?',
+  'hosp.freshText': 'ದೃಢೀಕೃತವಾಗಿ ಉಳಿಯಲು ಆಸ್ಪತ್ರೆಗಳು ಪ್ರತಿ {h} ಗಂಟೆಗೆ ಸಂಖ್ಯೆ ನವೀಕರಿಸಬೇಕು.', 'hosp.freshUnit': 'ದೃಢೀಕೃತ', 'hosp.freshLast': 'ಕೊನೆಯ ಸಿಬ್ಬಂದಿ ನವೀಕರಣ',
+  'hosp.onWayTitle': 'ದಾರಿಯಲ್ಲಿದ್ದೀರಾ?', 'hosp.onWayText': 'ಹೋಗುವಾಗ ಮೊದಲೇ ಕರೆ ಮಾಡಿ. ವ್ಯಕ್ತಿಯನ್ನು ಶಾಂತವಾಗಿ, ಅಲುಗಾಡದಂತೆ ಇರಿಸಿ, ಕಡಿತಕ್ಕೊಳಗಾದ ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸಬೇಡಿ.',
+  'hosp.directLine': 'ಆಸ್ಪತ್ರೆ ಫೋನ್', 'hosp.stockTitle': 'ಪ್ರತಿವಿಷ ದಾಸ್ತಾನು', 'hosp.stockSub': 'ಆಸ್ಪತ್ರೆ ಸಿಬ್ಬಂದಿ ವರದಿ ಮಾಡಿದ್ದು', 'hosp.vialsInStock': 'ವಯಲ್‌ಗಳು ಲಭ್ಯ', 'hosp.barNote': 'ಬಾರ್ 30 ವಯಲ್‌ಗಳವರೆಗೆ ತೋರಿಸುತ್ತದೆ',
+  'hosp.verifiedNote': 'ಸಿಬ್ಬಂದಿ ಇತ್ತೀಚೆಗೆ ಈ ಸಂಖ್ಯೆ ನವೀಕರಿಸಿದ್ದಾರೆ.', 'hosp.unverifiedNote': 'ಸಿಬ್ಬಂದಿ ಇತ್ತೀಚೆಗೆ ಈ ಸಂಖ್ಯೆ ನವೀಕರಿಸಿಲ್ಲ. ಹೋಗುವ ಮೊದಲು ಆಸ್ಪತ್ರೆಗೆ ಕರೆ ಮಾಡಿ ಪರಿಶೀಲಿಸಿ.',
+  'hosp.noneNote': 'ಈ ಆಸ್ಪತ್ರೆಯಲ್ಲಿ ಪ್ರತಿವಿಷ ಇಲ್ಲ. ಬೇರೆ ಆಸ್ಪತ್ರೆ ಆರಿಸಿ.',
+  'hosp.doText': 'ಶಾಂತವಾಗಿರಿ, ಕಡಿತಕ್ಕೊಳಗಾದ ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಹೃದಯಕ್ಕಿಂತ ಕೆಳಗೆ ಅಲುಗಾಡದಂತೆ ಇರಿಸಿ, ಉಂಗುರ ಮತ್ತು ಬಿಗಿ ವಸ್ತುಗಳನ್ನು ತೆಗೆಯಿರಿ, ವಾಹನದಲ್ಲಿ ಹೋಗಿ.',
+  'hosp.dontText': 'ಲಕ್ಷಣಗಳಿಗಾಗಿ ಕಾಯಬೇಡಿ. ಮನೆಮದ್ದು ಬಳಸಬೇಡಿ. ಹಾವನ್ನು ಹಿಡಿಯಲು ಪ್ರಯತ್ನಿಸಬೇಡಿ.',
+  'hosp.goTitle': 'ಈ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ', 'hosp.goText': 'ನೀವು ಬರುತ್ತಿರುವುದನ್ನು {name} ಗೆ ತಿಳಿಸಿ. ಮೊದಲ ಕೆಲವು ಸೆಕೆಂಡ್‌ಗಳಲ್ಲಿ ರದ್ದುಮಾಡಬಹುದು.', 'hosp.goNone': 'ಈ ಆಸ್ಪತ್ರೆಯಲ್ಲಿ ಪ್ರತಿವಿಷ ಇಲ್ಲ. ಬೇರೆ ಆಸ್ಪತ್ರೆ ಹುಡುಕಿ.',
+  'hosp.startHere': 'ಈ ಆಸ್ಪತ್ರೆಯೊಂದಿಗೆ ತುರ್ತು ಸೇವೆ ಪ್ರಾರಂಭಿಸಿ', 'hosp.findOther': 'ಬೇರೆ ಆಸ್ಪತ್ರೆ ಹುಡುಕಿ', 'hosp.directCall': 'ನೇರ ಕರೆ', 'hosp.callAhead': 'ಆಂಬ್ಯುಲೆನ್ಸ್‌ಗಾಗಿ {n} ಗೆ ಕರೆ ಮಾಡಿ.',
+
+  'aid.do': 'ಮಾಡಿ', 'aid.dont': 'ಮಾಡಬೇಡಿ', 'aid.chip': 'ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ', 'aid.intro': 'ಆಸ್ಪತ್ರೆಗೆ ಹೋಗುವಾಗ ಈ ಹಂತಗಳನ್ನು ಪಾಲಿಸಿ.',
+  'aid.offline': 'ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ: ಈ ಪುಟ ಇಂಟರ್ನೆಟ್ ಇಲ್ಲದೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ.', 'aid.stepsEyebrow': 'ಸುರಕ್ಷಿತ ಹಂತಗಳು', 'aid.stepsTitle': 'ಈಗಲೇ ಏನು ಮಾಡಬೇಕು',
+
+  'flow.step': 'ಹಂತ {n} / {total}', 'flow.call': '{n} ಗೆ ಕರೆ', 'flow.exit': 'ನಿರ್ಗಮಿಸಿ', 'flow.activeAlert': 'ನಿಮ್ಮ ಎಚ್ಚರಿಕೆ ಸಕ್ರಿಯವಾಗಿದೆ. ಹಿಂತಿರುಗಲು ಒತ್ತಿ',
+  'flow.chip': 'ಹಾವು ಕಡಿತ ತುರ್ತು', 'flow.whoTitle': 'ಯಾರಿಗೆ ಕಡಿದಿದೆ?', 'flow.whoSub': 'ಇದು ಆಸ್ಪತ್ರೆ ಸಿದ್ಧವಾಗಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.',
+  'flow.self': 'ನನಗೆ', 'flow.selfSub': 'ನನಗೆ ಕಡಿದಿದೆ', 'flow.other': 'ಬೇರೆಯವರಿಗೆ', 'flow.otherSub': 'ದೊಡ್ಡವರು', 'flow.child': 'ಮಗುವಿಗೆ', 'flow.childSub': '12 ವರ್ಷದೊಳಗೆ',
+  'flow.details': 'ವಿವರ (ಐಚ್ಛಿಕ)', 'flow.name': 'ಹೆಸರು', 'flow.age': 'ವಯಸ್ಸು', 'flow.ageBad': '0 ರಿಂದ 120 ರೊಳಗೆ ವಯಸ್ಸು ನಮೂದಿಸಿ.', 'flow.findHospital': 'ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆ ಹುಡುಕಿ',
+  'flow.locating': 'ನಿಮ್ಮ ಸ್ಥಳ ಹುಡುಕಲಾಗುತ್ತಿದೆ…', 'flow.locatingSub': 'ಫೋನ್ ಕೇಳಿದಾಗ ಸ್ಥಳಕ್ಕೆ ಅನುಮತಿ ನೀಡಿ. ಸಾಧ್ಯವಾದರೆ ಈಗಲೇ 108 ಗೆ ಕರೆ ಮಾಡಿ.',
+  'flow.bestBanner': 'ದೃಢೀಕೃತ ಪ್ರತಿವಿಷ ಇರುವ ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆ', 'flow.chosenBanner': 'ನೀವು ಆರಿಸಿದ ಆಸ್ಪತ್ರೆ', 'flow.nearestVerified': 'ಹತ್ತಿರದ ದೃಢೀಕೃತ', 'flow.yourChoice': 'ನಿಮ್ಮ ಆಯ್ಕೆ',
+  'flow.tileDistance': 'ದೂರ ಮತ್ತು ಸಮಯ', 'flow.tileStock': 'ಪ್ರತಿವಿಷ ದಾಸ್ತಾನು', 'flow.tilePhone': 'ಆಸ್ಪತ್ರೆ ಫೋನ್', 'flow.tilePhoneSub': 'ಕರೆ ಮಾಡಲು ಒತ್ತಿ',
+  'flow.unverifiedNote': 'ಇಲ್ಲಿನ ದಾಸ್ತಾನು ದೃಢೀಕರಿಸಿಲ್ಲ: ಹೋಗುವ ಮೊದಲು ಕರೆ ಮಾಡಿ.',
+  'flow.sendNote': 'ಎಚ್ಚರಿಕೆ ಕಳುಹಿಸಿದಾಗ ರದ್ದುಮಾಡಲು ನಿಮಗೆ {s} ಸೆಕೆಂಡ್ ಇರುತ್ತದೆ. ನಂತರ ನೀವು ಬರುತ್ತಿರುವುದನ್ನು ಆಸ್ಪತ್ರೆಗೆ ತಿಳಿಸಲಾಗುತ್ತದೆ, ಅವರು ಖಚಿತಪಡಿಸುತ್ತಾರೆ.',
+  'flow.send': 'ಆಸ್ಪತ್ರೆಗೆ ಎಚ್ಚರಿಕೆ ಕಳುಹಿಸಿ', 'flow.callHospital': 'ಆಸ್ಪತ್ರೆಗೆ ಕರೆ', 'flow.another': 'ಬೇರೆ ಆಸ್ಪತ್ರೆ ಆರಿಸಿ (ಹತ್ತಿರ {n})', 'flow.choose': 'ಆರಿಸಿ', 'flow.alertThis': 'ಈ ಆಸ್ಪತ್ರೆಗೆ ತಿಳಿಸಿ',
+  'flow.whileTravel': 'ಹೋಗುವಾಗ', 'flow.aid1': 'ಕಡಿತಕ್ಕೊಳಗಾದ ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಹೃದಯಕ್ಕಿಂತ ಕೆಳಗೆ ಅಲುಗಾಡದಂತೆ ಇರಿಸಿ.', 'flow.aid2': 'ಉಂಗುರ, ಗಡಿಯಾರ ಮತ್ತು ಬಿಗಿ ವಸ್ತುಗಳನ್ನು ತೆಗೆಯಿರಿ.', 'flow.aid3': 'ವಾಹನದಲ್ಲಿ ಹೋಗಿ. ಸಾಧ್ಯವಾದರೆ ನಡೆಯಬೇಡಿ.',
+  'flow.altTitle': 'ಹತ್ತಿರದ ಇತರ ಆಸ್ಪತ್ರೆಗಳು', 'flow.noStockTitle': 'ಈ ಆಸ್ಪತ್ರೆಯಲ್ಲಿ ಪ್ರತಿವಿಷ ಇಲ್ಲ', 'flow.noStockText': 'ಕೆಳಗಿನಿಂದ ಬೇರೆ ಆಸ್ಪತ್ರೆ ಆರಿಸಿ, ಮತ್ತು 108 ಗೆ ಕರೆ ಮಾಡಿ.',
+  'flow.noVerifiedTitle': 'ಹತ್ತಿರದ ಯಾವ ಆಸ್ಪತ್ರೆಯಲ್ಲೂ ದೃಢೀಕೃತ ದಾಸ್ತಾನಿಲ್ಲ', 'flow.noVerifiedText': 'ಈಗಲೇ {n} ಗೆ ಕರೆ ಮಾಡಿ. ಕೆಳಗಿನ ಆಸ್ಪತ್ರೆಗಳಲ್ಲಿ ಪ್ರತಿವಿಷ ಇರಬಹುದು: ಹೋಗುವ ಮೊದಲು ಒಂದಕ್ಕೆ ಕರೆ ಮಾಡಿ.',
+  'flow.otherOptions': 'ಇತರ ಆಯ್ಕೆಗಳು', 'flow.noOthers': 'ಈಗ ಬೇರೆ ಆಸ್ಪತ್ರೆಗಳು ಲಭ್ಯವಿಲ್ಲ. 108 ಗೆ ಕರೆ ಮಾಡಿ.',
+  'flow.locOffTitle': 'ನಿಮ್ಮ ಸ್ಥಳ ಸಿಗುತ್ತಿಲ್ಲ', 'flow.locDenied': 'ಈ ಸೈಟ್‌ಗೆ ಸ್ಥಳ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ. ಬ್ರೌಸರ್ ಸೆಟ್ಟಿಂಗ್‌ನಲ್ಲಿ ಅನುಮತಿಸಿ, ಅಥವಾ ಕೆಳಗಿನ ಆಸ್ಪತ್ರೆಗೆ ಕರೆ ಮಾಡಿ.',
+  'flow.locOffText': 'ಸ್ಥಳ ಆನ್ ಮಾಡಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಹೋಗುವ ಮೊದಲು ಕೆಳಗಿನ ಆಸ್ಪತ್ರೆಗೆ ಕರೆ ಮಾಡಿ.', 'flow.tryAgain': 'ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ', 'flow.callAhead': 'ಹೋಗುವ ಮೊದಲು ಆಸ್ಪತ್ರೆಗೆ ಕರೆ ಮಾಡಿ',
+  'flow.cdTitle': '{name} ಗೆ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ…', 'flow.cdText': 'ಟೈಮರ್ ಮುಗಿಯುವವರೆಗೆ ಏನೂ ಕಳುಹಿಸುವುದಿಲ್ಲ. ಈಗಲೂ ರದ್ದುಮಾಡಬಹುದು.', 'flow.seconds': 'ಸೆಕೆಂಡ್', 'flow.cancel': 'ಎಚ್ಚರಿಕೆ ರದ್ದುಮಾಡಿ',
+  'flow.waitSub': '{name} ಖಚಿತಪಡಿಸುತ್ತದೆ. ಆಸ್ಪತ್ರೆಗೆ ಹೋಗುತ್ತಲೇ ಇರಿ.', 'flow.replyIn': 'ಉತ್ತರಕ್ಕಾಗಿ ಕಾಯುತ್ತಿದೆ: {time}', 'flow.cancelAlert': 'ಎಚ್ಚರಿಕೆ ರದ್ದುಮಾಡಿ',
+  'flow.cancelAsk': 'ನೀವು ಇನ್ನು ಬರುವುದಿಲ್ಲ ಎಂದು ಆಸ್ಪತ್ರೆಗೆ ತಿಳಿಸಲಾಗುತ್ತದೆ. ಎಚ್ಚರಿಕೆ ರದ್ದುಮಾಡಬೇಕೇ?', 'flow.cancelYes': 'ಹೌದು, ರದ್ದುಮಾಡಿ',
+  'flow.confirmedSub': '{name} ನಿಮಗಾಗಿ ಸಿದ್ಧವಿದೆ. ಈಗಲೇ ಅಲ್ಲಿಗೆ ಹೋಗಿ.', 'flow.openDirections': 'ದಾರಿ ತೆರೆಯಿರಿ', 'flow.reached': 'ನಾನು ಆಸ್ಪತ್ರೆ ತಲುಪಿದ್ದೇನೆ',
+  'flow.tryOthersText': 'ಕೆಳಗಿನಿಂದ ಬೇರೆ ಆಸ್ಪತ್ರೆ ಆರಿಸಿ, ಆಂಬ್ಯುಲೆನ್ಸ್ ಬೇಕಾದರೆ {n} ಗೆ ಕರೆ ಮಾಡಿ.', 'flow.cancelledSub': 'ಯಾವ ಆಸ್ಪತ್ರೆಯೂ ನಿಮಗಾಗಿ ಕಾಯುವುದಿಲ್ಲ. ಯಾರಿಗಾದರೂ ಕಡಿದಿದ್ದರೆ ಮತ್ತೆ ಪ್ರಾರಂಭಿಸಿ.',
+  'flow.startAgain': 'ಮತ್ತೆ ಪ್ರಾರಂಭಿಸಿ', 'flow.arrivedSub': 'ಧನ್ಯವಾದ. ಹಾವು ಕಡಿದಿದೆ ಎಂದು ಸಿಬ್ಬಂದಿಗೆ ತಕ್ಷಣ ತಿಳಿಸಿ.',
+  'flow.leaveTitle': 'ಈ ಪರದೆಯಿಂದ ಹೊರಡುವಿರಾ?', 'flow.leaveText': 'ನಿಮ್ಮ ಎಚ್ಚರಿಕೆ ಇನ್ನೂ ಸಕ್ರಿಯವಾಗಿದೆ. ಮೇಲಿನ ಪಟ್ಟಿಯಿಂದ ಮತ್ತೆ ಬರಬಹುದು.', 'flow.leave': 'ಹೊರಡಿ',
+  'alert.waiting': 'ಆಸ್ಪತ್ರೆ ಖಚಿತಪಡಿಸುತ್ತದೆ', 'alert.confirmed': 'ಪ್ರತಿವಿಷ ಲಭ್ಯವಿದೆ ({time} ಕ್ಕೆ ಖಚಿತವಾಗಿದೆ)', 'alert.declined': 'ಈ ಆಸ್ಪತ್ರೆ ಈಗ ನಿಮ್ಮನ್ನು ಸ್ವೀಕರಿಸಲಾಗದು',
+  'alert.noReply': 'ಆಸ್ಪತ್ರೆಯಿಂದ ಉತ್ತರ ಬಂದಿಲ್ಲ', 'alert.cancelled': 'ಎಚ್ಚರಿಕೆ ರದ್ದಾಗಿದೆ', 'alert.arrived': 'ನೀವು ಆಸ್ಪತ್ರೆ ತಲುಪಿದ್ದೀರಿ',
+
+  'snakes.eyebrow': 'ಪ್ರಭೇದಗಳ ಮಾರ್ಗದರ್ಶಿ', 'snakes.title': 'ಕರ್ನಾಟಕದ ಹಾವುಗಳು', 'snakes.sub': 'ಸಾಮಾನ್ಯ ಹಾವುಗಳನ್ನು ಗುರುತಿಸಲು ಕಲಿಯಿರಿ. ಹಾವನ್ನು ಪರೀಕ್ಷಿಸಲು ಎಂದಿಗೂ ಹತ್ತಿರ ಹೋಗಬೇಡಿ.',
+  'snakes.search': 'ಹೆಸರಿನಿಂದ ಹುಡುಕಿ', 'snakes.all': 'ಎಲ್ಲಾ', 'snakes.filter': 'ವಿಷದ ಪ್ರಕಾರ ಆರಿಸಿ', 'snakes.anySnake': 'ವಿಷಕಾರಿ ಆಗಿರಲಿ ಇಲ್ಲದಿರಲಿ, ಇದು ಎಲ್ಲಾ ಹಾವುಗಳಿಗೂ ಅನ್ವಯಿಸುತ್ತದೆ.',
+  'snakes.emptyTitle': 'ಯಾವ ಹಾವೂ ಸಿಗಲಿಲ್ಲ', 'snakes.emptyText': 'ಬೇರೆ ಹುಡುಕಾಟ ಅಥವಾ ಜಿಲ್ಲೆ ಪ್ರಯತ್ನಿಸಿ.',
+  'snake.venomous': 'ವಿಷಕಾರಿ', 'snake.nonVenomous': 'ವಿಷರಹಿತ', 'snake.venomousFull': 'ವಿಷಕಾರಿ', 'snake.nonVenomousFull': 'ವಿಷರಹಿತ (ಆದರೂ ಕಚ್ಚಬಹುದು)',
+  'snake.status': 'ವಿಷ', 'snake.where': 'ಕಂಡುಬರುವ ಸ್ಥಳ', 'snake.statewide': 'ಎಲ್ಲಾ ಜಿಲ್ಲೆಗಳು', 'snake.nDistricts': '{n} ಜಿಲ್ಲೆಗಳು',
+  'snake.biteTitle': 'ಯಾರಿಗಾದರೂ ಕಡಿದಿದೆಯೇ?', 'snake.biteText': 'ಕಾಯಬೇಡಿ. ಶಾಂತವಾಗಿರಿ, ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸಬೇಡಿ, ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ.', 'snake.dial': '{n} ಗೆ ನೇರ ಕರೆ',
+  'snake.about': 'ಈ ಹಾವಿನ ಬಗ್ಗೆ', 'snake.habitat': 'ವಾಸಸ್ಥಳ', 'snake.districts': 'ಜಿಲ್ಲೆಗಳು', 'snake.lookalikeTitle': 'ಕಾಣಿಕೆಯನ್ನು ನಂಬಬೇಡಿ',
+  'snake.lookalikeText': 'ಅನೇಕ ಹಾವುಗಳು ಒಂದೇ ರೀತಿ ಕಾಣುತ್ತವೆ, ಕೆಲವು ನಿರುಪದ್ರವಿ ಹಾವುಗಳು ಅಪಾಯಕಾರಿ ಹಾವುಗಳಂತೆ ಕಾಣುತ್ತವೆ. ಕಡಿದರೆ ಯಾವ ಹಾವಾದರೂ ತುರ್ತು ಎಂದು ಪರಿಗಣಿಸಿ.',
+  'snake.back': 'ಎಲ್ಲಾ ಹಾವುಗಳಿಗೆ ಹಿಂತಿರುಗಿ', 'snake.rescuer': 'ಹಾವು ಹಿಡಿಯುವವರನ್ನು ಕೇಳಿ',
+
+  'catch.eyebrow': 'ಹಾವು ರಕ್ಷಣೆ', 'catch.title': 'ಹಾವು ಹಿಡಿಯುವವರು', 'catch.sub': 'ಹಾವನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ತೆಗೆಯಲು ಹತ್ತಿರದ ಹಾವು ಹಿಡಿಯುವವರನ್ನು ಸಂಪರ್ಕಿಸಿ.',
+  'catch.notMedical': 'ಹಾವು ಹಿಡಿಯುವವರು ವೈದ್ಯಕೀಯ ಸಹಾಯ ನೀಡಲಾರರು. ಯಾರಿಗಾದರೂ ಕಡಿದಿದ್ದರೆ ಈಗಲೇ {n} ಗೆ ಕರೆ ಮಾಡಿ.', 'catch.nearest': 'ಹತ್ತಿರದವರು ಮೊದಲು', 'catch.request': 'ರಕ್ಷಣೆ ಕೇಳಿ', 'catch.callDirect': 'ಕರೆ ಮಾಡಿ',
+  'catch.emptyTitle': 'ಯಾರೂ ಸಿಗಲಿಲ್ಲ', 'catch.emptyText': 'ಬೇರೆ ಜಿಲ್ಲೆ ಪ್ರಯತ್ನಿಸಿ.', 'catch.formTitle': 'ರಕ್ಷಣೆಗೆ ವಿನಂತಿ', 'catch.yourPhone': 'ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆ',
+  'catch.notes': 'ಟಿಪ್ಪಣಿ (ಐಚ್ಛಿಕ)', 'catch.notesHint': 'ಹಾವು ಎಲ್ಲಿದೆ? ಅದು ಹೇಗೆ ಕಾಣುತ್ತದೆ?', 'catch.locAttached': 'ನಿಮ್ಮ ಸ್ಥಳ ಹಂಚಿಕೊಳ್ಳಲಾಗುತ್ತದೆ',
+  'catch.locNeeded': 'ಹಾವು ಹಿಡಿಯುವವರು ನಿಮ್ಮನ್ನು ಹುಡುಕಲು ನಿಮ್ಮ ಸ್ಥಳ ಬೇಕು', 'catch.send': 'ವಿನಂತಿ ಕಳುಹಿಸಿ',
+  'rescue.title': 'ರಕ್ಷಣಾ ವಿನಂತಿ', 'rescue.REQUESTED': 'ವಿನಂತಿ ಕಳುಹಿಸಲಾಗಿದೆ', 'rescue.ACCEPTED': 'ಹಾವು ಹಿಡಿಯುವವರು ಬರುತ್ತಿದ್ದಾರೆ', 'rescue.DONE': 'ರಕ್ಷಣೆ ಪೂರ್ಣ', 'rescue.sub': '{name} ಅವರಿಗೆ ಸಹಾಯ ಕೇಳಲಾಗಿದೆ.',
+  'rescue.REQUESTED.short': 'ಕಳುಹಿಸಲಾಗಿದೆ', 'rescue.ACCEPTED.short': 'ದಾರಿಯಲ್ಲಿ', 'rescue.DONE.short': 'ಮುಗಿದಿದೆ',
+
+  'id.bannerTitle': 'ಯಾರಿಗಾದರೂ ಕಡಿದಿದೆಯೇ? ಪ್ರತಿ ನಿಮಿಷವೂ ಮುಖ್ಯ.', 'id.bannerText': 'ಫೋಟೋಗಳಿಗೆ ಸಮಯ ಹಾಳುಮಾಡಬೇಡಿ. ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸಬೇಡಿ, ಈಗಲೇ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ.',
+  'id.eyebrow': 'ಫೋಟೋ ಪರಿಶೀಲನೆ', 'id.title': 'ಹಾವು ಗುರುತಿಸಿ', 'id.ready': 'ಸಿದ್ಧ', 'id.drop': 'ಫೋಟೋ ತೆಗೆಯಿರಿ ಅಥವಾ ಇಲ್ಲಿಗೆ ಎಳೆಯಿರಿ',
+  'id.dropSub': 'ಇಡೀ ಹಾವನ್ನು 3 ಮೀಟರ್ ಅಥವಾ ಹೆಚ್ಚಿನ ಸುರಕ್ಷಿತ ದೂರದಿಂದ ಫೋಟೋ ತೆಗೆಯಿರಿ. ಹತ್ತಿರ ಹೋಗಬೇಡಿ.', 'id.camera': 'ಕ್ಯಾಮೆರಾ ತೆರೆಯಿರಿ', 'id.upload': 'ಫೈಲ್ ಅಪ್‌ಲೋಡ್',
+  'id.distance': 'ಕನಿಷ್ಠ 3 ಮೀಟರ್ ದೂರದಲ್ಲಿರಿ. ಹತ್ತಿರ ಹೋಗುವ ಬದಲು ಜೂಮ್ ಬಳಸಿ.', 'id.analysing': 'ನಿಮ್ಮ ಫೋಟೋ ನೋಡಲಾಗುತ್ತಿದೆ…', 'id.results': 'ಸಂಭಾವ್ಯ ಹೋಲಿಕೆಗಳು',
+  'id.demo': 'ಡೆಮೊ ಫಲಿತಾಂಶ: ಕೇವಲ ಮಾದರಿ ಊಹೆಗಳು', 'id.noGuess': 'ಇದು ಏನೆಂದು ಹೇಳಲಾಗಲಿಲ್ಲ. ಸ್ಪಷ್ಟ ಫೋಟೋ ಪ್ರಯತ್ನಿಸಿ.', 'id.readMore': 'ಇನ್ನಷ್ಟು ಓದಿ', 'id.another': 'ಇನ್ನೊಂದು ಫೋಟೋ ಪ್ರಯತ್ನಿಸಿ',
+  'id.disclaimer': 'ಇದು ತಪ್ಪಾಗಿರಬಹುದು.', 'id.unreadable': 'ಆ ಫೋಟೋ ಓದಲಾಗಲಿಲ್ಲ.', 'id.safetyTitle': 'ಸುರಕ್ಷಿತವಾಗಿರಿ',
+  'id.safe1': 'ಚಲನೆ ನಿಲ್ಲಿಸಿ, ನಿಧಾನವಾಗಿ ಹಿಂದೆ ಸರಿಯಿರಿ.', 'id.safe2': 'ಮಕ್ಕಳು ಮತ್ತು ಸಾಕುಪ್ರಾಣಿಗಳನ್ನು ದೂರವಿಡಿ.', 'id.safe3': 'ಹಾವನ್ನು ಮುಟ್ಟಬೇಡಿ, ಸಿಕ್ಕಿಸಬೇಡಿ, ಅದರ ಮೇಲೆ ವಸ್ತು ಎಸೆಯಬೇಡಿ.', 'id.safe4': 'ಅದು ಕಾಣುವ ಜಾಗದಲ್ಲಿರಿ ಮತ್ತು ಹಾವು ಹಿಡಿಯುವವರಿಗೆ ಕರೆ ಮಾಡಿ.',
+  'id.commonTitle': 'ಸಾಮಾನ್ಯ ಹಾವುಗಳು', 'id.browse': 'ಎಲ್ಲಾ ಹಾವುಗಳನ್ನು ನೋಡಿ', 'id.v.YES': 'ವಿಷಕಾರಿ', 'id.v.NO': 'ವಿಷರಹಿತ', 'id.v.UNSURE': 'ಖಚಿತವಿಲ್ಲ',
+
+  'login.title': 'ಸೈನ್ ಇನ್', 'login.sub': 'ಕುಟುಂಬದ ವಿವರ ಮತ್ತು ಸಂಪರ್ಕಗಳನ್ನು ಉಳಿಸಲು ಫೋನ್ ಸಂಖ್ಯೆಯಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ.', 'login.phone': 'ಫೋನ್ ಸಂಖ್ಯೆ', 'login.send': 'ಕೋಡ್ ಕಳುಹಿಸಿ',
+  'login.guest': 'ತುರ್ತು ಸಹಾಯ ಕೇಳಲು ಸೈನ್ ಇನ್ ಅಗತ್ಯವಿಲ್ಲ.', 'login.codeTitle': 'ನಿಮ್ಮ ಕೋಡ್ ನಮೂದಿಸಿ', 'login.codeSub': '{phone} ಗೆ 6 ಅಂಕಿಯ ಕೋಡ್ ಕಳುಹಿಸಿದ್ದೇವೆ.',
+  'login.demoHint': 'ಡೆಮೊ ಮೋಡ್: ಕೋಡ್ 123456', 'login.code': '6 ಅಂಕಿಯ ಕೋಡ್', 'login.codeBad': '6 ಅಂಕಿಯ ಕೋಡ್ ನಮೂದಿಸಿ.', 'login.verify': 'ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಸೈನ್ ಇನ್',
+  'login.change': 'ಸಂಖ್ಯೆ ಬದಲಿಸಿ', 'login.resend': 'ಕೋಡ್ ಮತ್ತೆ ಕಳುಹಿಸಿ', 'login.sent': 'ಹೊಸ ಕೋಡ್ ಕಳುಹಿಸಲಾಗಿದೆ.', 'login.welcome': 'ಸೈನ್ ಇನ್ ಆಗಿದೆ',
+
+  'profile.noName': 'ನಿಮ್ಮ ಪ್ರೊಫೈಲ್', 'profile.language': 'ಭಾಷೆ', 'profile.logout': 'ಸೈನ್ ಔಟ್', 'profile.loggedOut': 'ಸೈನ್ ಔಟ್ ಆಗಿದೆ', 'profile.family': 'ಕುಟುಂಬದ ಸದಸ್ಯರು',
+  'profile.familySub': 'ಉಳಿಸಿದ ವಿವರಗಳು ಎಚ್ಚರಿಕೆಯನ್ನು ಬೇಗ ಪ್ರಾರಂಭಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತವೆ.', 'profile.noFamily': 'ಇನ್ನೂ ಯಾರನ್ನೂ ಉಳಿಸಿಲ್ಲ.', 'profile.years': '{n} ವರ್ಷ', 'profile.allergies': 'ಅಲರ್ಜಿಗಳು',
+  'profile.relation': 'ಸಂಬಂಧ', 'profile.notes': 'ಟಿಪ್ಪಣಿ', 'profile.addMember': 'ಕುಟುಂಬದ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ', 'profile.editMember': 'ಕುಟುಂಬದ ಸದಸ್ಯರನ್ನು ಬದಲಿಸಿ', 'profile.contacts': 'ತುರ್ತು ಸಂಪರ್ಕಗಳು',
+  'profile.contactsSub': 'ನೀವು ಬೇಗ ಕರೆ ಮಾಡಬಹುದಾದವರು.', 'profile.noContacts': 'ಇನ್ನೂ ಸಂಪರ್ಕಗಳನ್ನು ಉಳಿಸಿಲ್ಲ.', 'profile.addContact': 'ಸಂಪರ್ಕ ಸೇರಿಸಿ', 'profile.editContact': 'ಸಂಪರ್ಕ ಬದಲಿಸಿ',
+  'profile.deleteAsk': 'ಇದನ್ನು ನಿಮ್ಮ ಪ್ರೊಫೈಲ್‌ನಿಂದ ತೆಗೆಯಲಾಗುತ್ತದೆ.',
+
+  'staff.title': 'ಸಿಬ್ಬಂದಿ ಪೋರ್ಟಲ್', 'staff.portal': 'ಆಸ್ಪತ್ರೆ ಸಿಬ್ಬಂದಿ ಪೋರ್ಟಲ್', 'staff.signIn': 'ಸಿಬ್ಬಂದಿ ಸೈನ್ ಇನ್', 'staff.signInSub': 'ಪ್ರತಿವಿಷ ದಾಸ್ತಾನು ನವೀಕರಿಸಲು ಮತ್ತು ಬರುವ ಎಚ್ಚರಿಕೆಗಳಿಗೆ ಉತ್ತರಿಸಲು ಸೈನ್ ಇನ್ ಮಾಡಿ.',
+  'staff.username': 'ಬಳಕೆದಾರ ಹೆಸರು', 'staff.password': 'ಪಾಸ್‌ವರ್ಡ್', 'staff.signInBtn': 'ಸೈನ್ ಇನ್', 'staff.demoHint': 'ಡೆಮೊ: staff-bengaluru / staff123', 'staff.desk': 'ತುರ್ತು ವಿಭಾಗ', 'staff.logout': 'ಸೈನ್ ಔಟ್',
+  'staff.stockTitle': 'ಪ್ರತಿವಿಷ ದಾಸ್ತಾನು', 'staff.stockSub': 'ದೃಢೀಕೃತವಾಗಿ ಉಳಿಯಲು ಕನಿಷ್ಠ ಪ್ರತಿ {h} ಗಂಟೆಗೆ ಸಂಖ್ಯೆ ನವೀಕರಿಸಿ.', 'staff.vials': 'ವಯಲ್‌ಗಳು', 'staff.update': 'ದಾಸ್ತಾನು ಈಗ ನವೀಕರಿಸಿ',
+  'staff.updateHelp': 'ಉಳಿಸಿದಾಗ ಈಗಿನ ಸಮಯ ದಾಖಲಾಗುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ದಾಸ್ತಾನು ದೃಢೀಕೃತ ಎಂದು ತೋರಿಸುತ್ತದೆ.', 'staff.updated': 'ದಾಸ್ತಾನು ನವೀಕರಿಸಲಾಗಿದೆ', 'staff.vialsBad': '0 ರಿಂದ 10000 ರೊಳಗೆ ಪೂರ್ಣ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ.',
+  'staff.incoming': 'ಬರುವ ಎಚ್ಚರಿಕೆಗಳು', 'staff.live': 'ನೇರ', 'staff.polling': 'ಹೊಸದಾಗುತ್ತಿದೆ', 'staff.noneTitle': 'ಈಗ ಯಾವ ಎಚ್ಚರಿಕೆಯೂ ಇಲ್ಲ', 'staff.noneText': 'ಹೊಸ ಎಚ್ಚರಿಕೆಗಳು ಶಬ್ದದೊಂದಿಗೆ ಇಲ್ಲಿ ತಕ್ಷಣ ಕಾಣಿಸುತ್ತವೆ.',
+  'staff.recent': 'ಇತ್ತೀಚಿನವು', 'staff.accept': 'ಒಪ್ಪಿಕೊಳ್ಳಿ', 'staff.decline': 'ನಿರಾಕರಿಸಿ', 'staff.declineTitle': 'ಈ ಎಚ್ಚರಿಕೆ ನಿರಾಕರಿಸಿ', 'staff.reason': 'ಕಾರಣ (ಐಚ್ಛಿಕ)', 'staff.reasonHint': 'ಉದಾಹರಣೆ: ವೈದ್ಯರು ಖಾಲಿ ಇಲ್ಲ',
+  'staff.onTheWay': 'ರೋಗಿ ದಾರಿಯಲ್ಲಿದ್ದಾರೆ', 'staff.arrivedBtn': 'ರೋಗಿ ತಲುಪಿದ್ದಾರೆ', 'staff.away': '{km} ಕಿ.ಮೀ ದೂರ · ಸುಮಾರು {n} ನಿಮಿಷ', 'staff.replyIn': '{time} ರೊಳಗೆ ಉತ್ತರಿಸಿ', 'staff.newAlert': 'ಹೊಸ ಎಚ್ಚರಿಕೆ',
+  'staff.st.PENDING_CANCEL': 'ಕಾಯುತ್ತಿದೆ', 'staff.st.WAITING': 'ನಿಮ್ಮ ಉತ್ತರಕ್ಕಾಗಿ ಕಾಯುತ್ತಿದೆ', 'staff.st.CONFIRMED': 'ರೋಗಿ ದಾರಿಯಲ್ಲಿದ್ದಾರೆ', 'staff.st.DECLINED': 'ನಿರಾಕರಿಸಲಾಗಿದೆ', 'staff.st.NO_REPLY': 'ಉತ್ತರವಿಲ್ಲ',
+  'staff.st.CANCELLED': 'ರೋಗಿ ರದ್ದುಮಾಡಿದರು', 'staff.st.ARRIVED': 'ರೋಗಿ ತಲುಪಿದ್ದಾರೆ',
+
+  'admin.title': 'ನಿರ್ವಾಹಕ', 'admin.signIn': 'ನಿರ್ವಾಹಕ ಸೈನ್ ಇನ್', 'admin.signInSub': 'ಆಸ್ಪತ್ರೆಗಳು, ಸಿಬ್ಬಂದಿ, ಹಾವುಗಳು ಮತ್ತು ಹಾವು ಹಿಡಿಯುವವರನ್ನು ನಿರ್ವಹಿಸಿ.',
+  'admin.tab.hospitals': 'ಆಸ್ಪತ್ರೆಗಳು', 'admin.tab.staff': 'ಸಿಬ್ಬಂದಿ', 'admin.tab.snakes': 'ಹಾವುಗಳು', 'admin.tab.catchers': 'ಹಾವು ಹಿಡಿಯುವವರು', 'admin.tab.alerts': 'ಎಚ್ಚರಿಕೆಗಳು', 'admin.tab.rescues': 'ರಕ್ಷಣೆಗಳು', 'admin.tab.photos': 'ಫೋಟೋಗಳು',
+  'admin.col.name': 'ಹೆಸರು', 'admin.col.district': 'ಜಿಲ್ಲೆ', 'admin.col.phone': 'ಫೋನ್', 'admin.col.vials': 'ದಾಸ್ತಾನು', 'admin.col.username': 'ಬಳಕೆದಾರ ಹೆಸರು', 'admin.col.hospital': 'ಆಸ್ಪತ್ರೆ', 'admin.col.active': 'ಸಕ್ರಿಯ',
+  'admin.col.nameEn': 'ಇಂಗ್ಲಿಷ್ ಹೆಸರು', 'admin.col.nameKn': 'ಕನ್ನಡ ಹೆಸರು', 'admin.col.scientificName': 'ವೈಜ್ಞಾನಿಕ ಹೆಸರು', 'admin.col.venomous': 'ವಿಷಕಾರಿ', 'admin.col.status': 'ಸ್ಥಿತಿ',
+  'admin.col.patientType': 'ರೋಗಿ', 'admin.col.created': 'ರಚಿಸಿದ್ದು', 'admin.col.sent': 'ಕಳುಹಿಸಿದ್ದು', 'admin.col.confirmed': 'ಖಚಿತವಾದದ್ದು', 'admin.col.arrived': 'ತಲುಪಿದ್ದು', 'admin.col.catcher': 'ಹಾವು ಹಿಡಿಯುವವರು',
+  'admin.col.notes': 'ಟಿಪ್ಪಣಿ', 'admin.col.species': 'ಪ್ರಭೇದ', 'admin.col.source': 'ಮೂಲ', 'admin.col.verifiedBy': 'ಪರಿಶೀಲಿಸಿದವರು',
+  'admin.f.name': 'ಹೆಸರು', 'admin.f.district': 'ಜಿಲ್ಲೆ', 'admin.f.address': 'ವಿಳಾಸ', 'admin.f.phone': 'ಫೋನ್', 'admin.f.lat': 'ಅಕ್ಷಾಂಶ', 'admin.f.lng': 'ರೇಖಾಂಶ', 'admin.f.vials': 'ದಾಸ್ತಾನಿನ ವಯಲ್‌ಗಳು',
+  'admin.f.active': 'ಸಕ್ರಿಯ', 'admin.f.username': 'ಬಳಕೆದಾರ ಹೆಸರು', 'admin.f.password': 'ಪಾಸ್‌ವರ್ಡ್ (ಹಾಗೆಯೇ ಇಡಲು ಖಾಲಿ ಬಿಡಿ)', 'admin.f.hospitalId': 'ಆಸ್ಪತ್ರೆ', 'admin.f.nameEn': 'ಇಂಗ್ಲಿಷ್ ಹೆಸರು',
+  'admin.f.nameKn': 'ಕನ್ನಡ ಹೆಸರು', 'admin.f.scientificName': 'ವೈಜ್ಞಾನಿಕ ಹೆಸರು', 'admin.f.venomous': 'ವಿಷಕಾರಿ', 'admin.f.description': 'ವಿವರಣೆ', 'admin.f.habitat': 'ವಾಸಸ್ಥಳ',
+  'admin.f.districts': 'ಜಿಲ್ಲೆಗಳು (ಅಲ್ಪವಿರಾಮದಿಂದ ಬೇರ್ಪಡಿಸಿ, ಅಥವಾ Statewide)', 'admin.f.imageUrl': 'ಚಿತ್ರದ ಪಥ',
+  'admin.hide': 'ಮರೆಮಾಡಿ', 'admin.deactivate': 'ಆಫ್ ಮಾಡಿ', 'admin.verify': 'ಪರಿಶೀಲಿಸಿ', 'admin.export': 'CSV ರಫ್ತು', 'admin.empty': 'ಇಲ್ಲಿ ಇನ್ನೂ ಏನೂ ಇಲ್ಲ.', 'admin.confirmRemove': 'ನಿಮಗೆ ಖಚಿತವೇ?',
+
+  'foot.about': 'ಹಾವು ಕಡಿತದ ನಂತರ ತ್ವರಿತ ಸಹಾಯ: ದೃಢೀಕೃತ ಪ್ರತಿವಿಷ ಇರುವ ಆಸ್ಪತ್ರೆ ಹುಡುಕಿ, ಅದಕ್ಕೆ ತಿಳಿಸಿ, ಅಲ್ಲಿಗೆ ತಲುಪಿ.', 'foot.numbers': '24/7 ಸಹಾಯವಾಣಿಗಳು', 'foot.ambulance': 'ಆಂಬ್ಯುಲೆನ್ಸ್',
+  'foot.dial': '{n} ಗೆ ಕರೆ', 'foot.poison': 'ವಿಷ ಸಹಾಯವಾಣಿ', 'foot.explore': 'ಅನ್ವೇಷಿಸಿ', 'foot.staff': 'ಸಿಬ್ಬಂದಿ ಪೋರ್ಟಲ್', 'foot.install': 'ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ',
+  'chat.title': 'ಸಹಾಯ ಚಾಟ್', 'chat.sub': 'ಹಾವುಗಳು, ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ, ಆಸ್ಪತ್ರೆಗಳು ಮತ್ತು ಆ್ಯಪ್ ಸಹಾಯ', 'chat.bite': 'ಯಾರಿಗಾದರೂ ಕಡಿದಿದೆಯೇ?', 'chat.open': 'ಸಹಾಯ ಚಾಟ್ ತೆರೆಯಿರಿ',
+  'chat.hello': 'ನಮಸ್ಕಾರ! ಹಾವುಗಳು, ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ ಹಂತಗಳು, ಆಸ್ಪತ್ರೆಗಳು ಮತ್ತು ಈ ಆ್ಯಪ್ ಬಗ್ಗೆ ನಾನು ಸಹಾಯ ಮಾಡಬಲ್ಲೆ. ಯಾರಿಗಾದರೂ ಕಡಿದಿದ್ದರೆ ಈಗಲೇ 108 ಗೆ ಕರೆ ಮಾಡಿ.', 'chat.placeholder': 'ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಬರೆಯಿರಿ', 'chat.send': 'ಕಳುಹಿಸಿ',
+  'chat.s1': 'ಕಡಿತದ ನಂತರ ನಾನು ಏನು ಮಾಡಬೇಕು?', 'chat.s2': 'ಆಸ್ಪತ್ರೆ ಹೇಗೆ ಹುಡುಕುವುದು?', 'chat.s3': 'ಹಾವನ್ನು ಹೇಗೆ ಗುರುತಿಸುವುದು?', 'chat.fallbackCall': 'ಯಾರಿಗಾದರೂ ಕಡಿದಿದ್ದರೆ {n} ಗೆ ಕರೆ ಮಾಡಿ.',
+  'offline.bar': 'ನೀವು ಆಫ್‌ಲೈನ್ ಇದ್ದೀರಿ. ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ ಮತ್ತು ಹಾವುಗಳು ಇನ್ನೂ ಕೆಲಸ ಮಾಡುತ್ತವೆ. ತುರ್ತಿಗೆ 108 ಗೆ ಕರೆ ಮಾಡಿ.', 'nf.title': 'ಪುಟ ಸಿಗಲಿಲ್ಲ', 'nf.text': 'ಈ ಪುಟ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.', 'map.label': 'ಆಸ್ಪತ್ರೆಗಳ ನಕ್ಷೆ',
+};
+
+const dict = { en, kn };
+let lang = 'en';
+const listeners = [];
+
+export const getLang = () => lang;
+export const otherLang = () => (lang === 'kn' ? 'en' : 'kn');
+
+function fmt(s, vars) { return vars ? s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? '')) : s; }
+export const tx = (l, key, vars) => fmt(dict[l]?.[key] ?? en[key] ?? key, vars);
+export const t = (key, vars) => tx(lang, key, vars);
+export const tOther = (key, vars) => tx(otherLang(), key, vars);
+
+/** For bilingual data from the server: { en, kn } -> current language. */
+export const pick = (obj) => (obj ? obj[lang] ?? obj.en : '');
+export const nameOf = (snake) => (lang === 'kn' ? snake.nameKn : snake.nameEn);
+
+export function initLang(defaultLang) {
+  const saved = store.get('ss-lang');
+  lang = saved === 'kn' || saved === 'en' ? saved : (defaultLang === 'kn' ? 'kn' : 'en');
+  document.documentElement.lang = lang;
+}
+
+export function setLang(l) {
+  if (l !== 'en' && l !== 'kn') return;
+  lang = l;
+  store.set('ss-lang', l);
+  document.documentElement.lang = l;
+  listeners.forEach((f) => f(l));
+}
+
+export const onLangChange = (fn) => listeners.push(fn);

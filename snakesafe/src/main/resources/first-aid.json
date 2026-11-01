@@ -1,0 +1,56 @@
+{
+  "title": { "en": "First aid for a snakebite", "kn": "ಹಾವು ಕಡಿತದ ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ" },
+  "reminder": {
+    "en": "Treat every bite as an emergency.",
+    "kn": "ಪ್ರತಿ ಹಾವು ಕಡಿತವನ್ನೂ ತುರ್ತು ಪರಿಸ್ಥಿತಿ ಎಂದು ಪರಿಗಣಿಸಿ."
+  },
+  "steps": [
+    {
+      "id": "calm",
+      "en": { "title": "Stay calm", "text": "Sit down and breathe slowly. Stay as still as you can." },
+      "kn": { "title": "ಶಾಂತವಾಗಿರಿ", "text": "ಕುಳಿತುಕೊಳ್ಳಿ ಮತ್ತು ನಿಧಾನವಾಗಿ ಉಸಿರಾಡಿ. ಸಾಧ್ಯವಾದಷ್ಟು ಅಲುಗಾಡದೆ ಇರಿ." }
+    },
+    {
+      "id": "move-away",
+      "en": { "title": "Move away from the snake", "text": "Step a safe distance away. Do not try to catch or kill the snake." },
+      "kn": { "title": "ಹಾವಿನಿಂದ ದೂರ ಹೋಗಿ", "text": "ಸುರಕ್ಷಿತ ದೂರಕ್ಕೆ ಸರಿಯಿರಿ. ಹಾವನ್ನು ಹಿಡಿಯಲು ಅಥವಾ ಕೊಲ್ಲಲು ಪ್ರಯತ್ನಿಸಬೇಡಿ." }
+    },
+    {
+      "id": "limb-still",
+      "en": { "title": "Keep the limb still", "text": "Keep the bitten arm or leg still and lower than your heart." },
+      "kn": { "title": "ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸಬೇಡಿ", "text": "ಕಡಿತಕ್ಕೊಳಗಾದ ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸದೆ, ಹೃದಯಕ್ಕಿಂತ ಕೆಳಗೆ ಇರಿಸಿ." }
+    },
+    {
+      "id": "remove-tight",
+      "en": { "title": "Remove rings and tight items", "text": "Take off rings, watches, bangles and tight clothing near the bite. The area may swell." },
+      "kn": { "title": "ಉಂಗುರ ಮತ್ತು ಬಿಗಿ ವಸ್ತುಗಳನ್ನು ತೆಗೆಯಿರಿ", "text": "ಕಡಿತದ ಜಾಗದ ಬಳಿ ಇರುವ ಉಂಗುರ, ಗಡಿಯಾರ, ಬಳೆ ಮತ್ತು ಬಿಗಿಯಾದ ಬಟ್ಟೆಗಳನ್ನು ತೆಗೆಯಿರಿ. ಆ ಭಾಗ ಊದಿಕೊಳ್ಳಬಹುದು." }
+    },
+    {
+      "id": "call-108",
+      "en": { "title": "Call 108 and go to a hospital now", "text": "Call 108 and get to a hospital by vehicle. Do not walk if you can avoid it. Do not wait to see if symptoms appear." },
+      "kn": { "title": "ಈಗಲೇ 108 ಗೆ ಕರೆ ಮಾಡಿ, ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ", "text": "108 ಗೆ ಕರೆ ಮಾಡಿ ಮತ್ತು ವಾಹನದಲ್ಲಿ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ. ಸಾಧ್ಯವಾದರೆ ನಡೆಯಬೇಡಿ. ಲಕ್ಷಣಗಳು ಕಾಣಿಸುವವರೆಗೆ ಕಾಯಬೇಡಿ." }
+    },
+    {
+      "id": "use-app",
+      "en": { "title": "Use the Emergency button", "text": "Tap the red Emergency button to find the nearest hospital with verified antivenom and let them know you are coming." },
+      "kn": { "title": "ತುರ್ತು ಬಟನ್ ಬಳಸಿ", "text": "ದೃಢೀಕೃತ ಹಾವಿನ ವಿಷದ ಪ್ರತಿವಿಷ ಇರುವ ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆಯನ್ನು ಹುಡುಕಲು ಕೆಂಪು ತುರ್ತು ಬಟನ್ ಒತ್ತಿ ಮತ್ತು ನೀವು ಬರುತ್ತಿರುವುದನ್ನು ಅವರಿಗೆ ತಿಳಿಸಿ." }
+    },
+    {
+      "id": "note-time",
+      "en": { "title": "Note the time", "text": "Remember the time of the bite. If it is safe, remember the snake's colour and size, or take a photo from far away." },
+      "kn": { "title": "ಸಮಯವನ್ನು ನೆನಪಿಡಿ", "text": "ಕಡಿತದ ಸಮಯವನ್ನು ನೆನಪಿಡಿ. ಸುರಕ್ಷಿತವಾಗಿದ್ದರೆ ಹಾವಿನ ಬಣ್ಣ ಮತ್ತು ಗಾತ್ರವನ್ನು ನೆನಪಿಡಿ ಅಥವಾ ದೂರದಿಂದ ಫೋಟೋ ತೆಗೆಯಿರಿ." }
+    }
+  ],
+  "avoid": [
+    {
+      "id": "no-delay",
+      "en": "Do not delay. Go to a hospital even if you feel fine.",
+      "kn": "ತಡ ಮಾಡಬೇಡಿ. ಚೆನ್ನಾಗಿದ್ದೇನೆ ಅನಿಸಿದರೂ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ."
+    },
+    {
+      "id": "no-home-remedies",
+      "en": "Do not use home remedies or wait for a healer. They waste time.",
+      "kn": "ಮನೆಮದ್ದು ಬಳಸಬೇಡಿ ಅಥವಾ ಬೇರೆಯವರಿಗಾಗಿ ಕಾಯಬೇಡಿ. ಅದು ಸಮಯ ವ್ಯರ್ಥ ಮಾಡುತ್ತದೆ."
+    }
+  ]
+}

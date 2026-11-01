@@ -1,0 +1,11 @@
+target/
+data/
+logs/
+*.log
+.idea/
+*.iml
+.vscode/
+.env
+.env.*
+*.class
+run.log

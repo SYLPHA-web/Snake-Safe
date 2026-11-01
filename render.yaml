@@ -1,0 +1,39 @@
+# Render blueprint: New -> Blueprint -> pick this repo. Render builds the Dockerfile and asks for the secret values.
+# Values marked "sync: false" are asked for in the dashboard and never stored in Git.
+services:
+  - type: web
+    name: snakesafe-backend
+    runtime: docker
+    region: singapore          # closest Render region to India
+    plan: starter              # "free" sleeps after ~15 min idle (about a minute to wake): fine for a demo, not for emergencies
+    healthCheckPath: /api/config
+    autoDeploy: true
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: supabase
+      - key: TRUST_PROXY
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true    # Render creates a long random value
+      - key: DB_URL
+        sync: false            # jdbc:postgresql://aws-0-<region>.pooler.supabase.com:5432/postgres?sslmode=require
+      - key: DB_USER
+        sync: false            # postgres.<project-ref>
+      - key: DB_PASSWORD
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false            # at least 10 characters
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SEED_SAMPLE_DATA
+        value: "false"         # set to true once if you want the sample hospitals for a showcase
+      - key: CHAT_MODE
+        value: STUB            # change to AI and add AI_API_KEY to use the Claude chatbot
+      - key: IDENTIFY_MODE
+        value: STUB
+      - key: AI_API_KEY
+        sync: false

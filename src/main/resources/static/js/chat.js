@@ -29,10 +29,11 @@ export function initChat(cfg) {
   }
 
   const log = () => $('.chat-log', panel);
-  function add(text, who) {
+  function add(text, who, note) {
     const d = document.createElement('div');
     d.className = `msg ${who}`;
     d.textContent = text;
+    if (note) { const n = document.createElement('div'); n.className = 'xs muted'; n.style.marginTop = '6px'; n.textContent = note; d.append(n); }
     log().append(d);
     log().scrollTop = log().scrollHeight;
     return d;
@@ -57,7 +58,7 @@ export function initChat(cfg) {
     try {
       const r = await api('/api/chat', { method: 'POST', body: { message: text.trim(), language: getLang(), history: history.slice(-MAX_HISTORY) } });
       typing.remove();
-      add(r.reply, 'bot');
+      add(r.reply, 'bot', r.fallback ? t('chat.quick') : '');
       history.push({ role: 'user', content: text.trim() }, { role: 'assistant', content: r.reply });
     } catch (e) {
       typing.remove();

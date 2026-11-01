@@ -3,6 +3,7 @@ import { store } from './util.js';
 
 const en = {
   'lang.code': 'en',
+  'theme.toggle': 'Dark mode',
   'brand.region': 'Karnataka', 'brand.sub': 'Snakebite emergency help',
   'nav.home': 'Home', 'nav.identify': 'Identify', 'nav.snakes': 'Snakes', 'nav.catchers': 'Catchers', 'nav.firstAid': 'First Aid', 'nav.hospitals': 'Hospitals',
   'nav.emergency': 'Emergency', 'nav.profile': 'Profile', 'nav.sos': 'EMERGENCY SOS', 'nav.language': 'Change language',
@@ -24,7 +25,7 @@ const en = {
   'err.CATCHER_NOT_FOUND': 'Snake catcher not found.', 'err.RESCUE_NOT_FOUND': 'Rescue request not found.', 'err.SNAKE_NOT_FOUND': 'Snake not found.',
   'err.AI_ERROR': 'This feature is not available right now.', 'err.AI_NOT_CONFIGURED': 'This feature is not set up on this server.',
   'err.MESSAGE_TOO_LONG': 'Your message is too long.', 'err.CONFLICT': 'This was changed at the same time. Please try again.',
-  'err.INTERNAL_ERROR': 'Something went wrong on our side.', 'err.USERNAME_TAKEN': 'That username is already used.', 'err.LIMIT_REACHED': 'You have reached the limit.',
+  'err.INTERNAL_ERROR': 'Something went wrong on our side.', 'err.BACKEND_UNREACHABLE': 'The server is not reachable right now. Please try again in a minute. If someone was bitten, call 108.', 'err.USERNAME_TAKEN': 'That username is already used.', 'err.LIMIT_REACHED': 'You have reached the limit.',
 
   'time.min': '{n} min ago', 'time.hour': '{n} h ago', 'time.day': '{n} d ago',
   'stock.verified': 'Verified · {ago}', 'stock.unverified': 'Unverified · {ago}', 'stock.none': 'No stock', 'stock.outOfStock': 'Out of stock',
@@ -122,6 +123,7 @@ const en = {
   'id.dropSub': 'Photograph the whole snake from a safe distance of 3 metres or more. Do not go closer.', 'id.camera': 'Open Camera', 'id.upload': 'Upload File',
   'id.distance': 'Keep at least 3 metres away. Use zoom instead of stepping closer.', 'id.analysing': 'Looking at your photo…', 'id.results': 'Possible matches',
   'id.demo': 'Demo results: sample guesses only', 'id.noGuess': 'We could not tell what this is. Try a clearer photo.', 'id.readMore': 'Read more', 'id.another': 'Try another photo',
+  'id.cameraTitle': 'Take a photo', 'id.capture': 'Capture', 'id.cameraDenied': 'Camera is blocked or not available. Choose a photo file instead.',
   'id.disclaimer': 'This may be wrong.', 'id.unreadable': 'We could not read that photo.', 'id.safetyTitle': 'Stay safe',
   'id.safe1': 'Stop moving and step back slowly.', 'id.safe2': 'Keep children and pets away.', 'id.safe3': 'Do not touch, trap or throw things at the snake.', 'id.safe4': 'Stay where you can see it and call a snake catcher.',
   'id.commonTitle': 'Common snakes', 'id.browse': 'Browse all snakes', 'id.v.YES': 'Venomous', 'id.v.NO': 'Not venomous', 'id.v.UNSURE': 'Not sure',
@@ -163,12 +165,14 @@ const en = {
   'foot.dial': 'Dial {n}', 'foot.poison': 'Poison helpline', 'foot.explore': 'Explore', 'foot.staff': 'Staff portal', 'foot.install': 'Install app',
   'chat.title': 'Help chat', 'chat.sub': 'Snakes, first aid, hospitals and app help', 'chat.bite': 'Someone bitten?', 'chat.open': 'Open help chat',
   'chat.hello': 'Hello! I can help with snakes, first aid steps, hospitals and this app. If someone was bitten, call 108 now.', 'chat.placeholder': 'Type your question', 'chat.send': 'Send',
+  'chat.quick': 'Quick answer: the assistant is busy.', 'admin.import': 'Import CSV', 'admin.importDone': '{c} added, {u} updated, {s} skipped', 'admin.importWhy': 'Some rows were skipped',
   'chat.s1': 'What should I do after a bite?', 'chat.s2': 'How do I find a hospital?', 'chat.s3': 'How do I identify a snake?', 'chat.fallbackCall': 'If someone was bitten, call {n}.',
   'offline.bar': 'You are offline. First aid and snakes still work. Call 108 for emergencies.', 'nf.title': 'Page not found', 'nf.text': 'This page does not exist.', 'map.label': 'Map of hospitals',
 };
 
 const kn = {
   'lang.code': 'kn',
+  'theme.toggle': 'ಡಾರ್ಕ್ ಮೋಡ್',
   'brand.region': 'ಕರ್ನಾಟಕ', 'brand.sub': 'ಹಾವು ಕಡಿತ ತುರ್ತು ಸಹಾಯ',
   'nav.home': 'ಮುಖಪುಟ', 'nav.identify': 'ಗುರುತಿಸಿ', 'nav.snakes': 'ಹಾವುಗಳು', 'nav.catchers': 'ಹಾವು ಹಿಡಿಯುವವರು', 'nav.firstAid': 'ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ', 'nav.hospitals': 'ಆಸ್ಪತ್ರೆಗಳು',
   'nav.emergency': 'ತುರ್ತು', 'nav.profile': 'ಪ್ರೊಫೈಲ್', 'nav.sos': 'ತುರ್ತು ಸಹಾಯ', 'nav.language': 'ಭಾಷೆ ಬದಲಿಸಿ',
@@ -190,7 +194,7 @@ const kn = {
   'err.CATCHER_NOT_FOUND': 'ಹಾವು ಹಿಡಿಯುವವರು ಸಿಗಲಿಲ್ಲ.', 'err.RESCUE_NOT_FOUND': 'ರಕ್ಷಣಾ ವಿನಂತಿ ಸಿಗಲಿಲ್ಲ.', 'err.SNAKE_NOT_FOUND': 'ಹಾವು ಸಿಗಲಿಲ್ಲ.',
   'err.AI_ERROR': 'ಈ ಸೌಲಭ್ಯ ಈಗ ಲಭ್ಯವಿಲ್ಲ.', 'err.AI_NOT_CONFIGURED': 'ಈ ಸರ್ವರ್‌ನಲ್ಲಿ ಈ ಸೌಲಭ್ಯ ಹೊಂದಿಸಿಲ್ಲ.',
   'err.MESSAGE_TOO_LONG': 'ನಿಮ್ಮ ಸಂದೇಶ ತುಂಬಾ ಉದ್ದವಾಗಿದೆ.', 'err.CONFLICT': 'ಇದೇ ಸಮಯದಲ್ಲಿ ಬದಲಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
-  'err.INTERNAL_ERROR': 'ನಮ್ಮ ಕಡೆ ಏನೋ ತಪ್ಪಾಗಿದೆ.', 'err.USERNAME_TAKEN': 'ಆ ಬಳಕೆದಾರ ಹೆಸರು ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ.', 'err.LIMIT_REACHED': 'ನೀವು ಮಿತಿ ತಲುಪಿದ್ದೀರಿ.',
+  'err.INTERNAL_ERROR': 'ನಮ್ಮ ಕಡೆ ಏನೋ ತಪ್ಪಾಗಿದೆ.', 'err.BACKEND_UNREACHABLE': 'ಸರ್ವರ್ ಈಗ ಸಿಗುತ್ತಿಲ್ಲ. ಒಂದು ನಿಮಿಷ ಬಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ. ಯಾರಿಗಾದರೂ ಕಡಿದಿದ್ದರೆ 108 ಗೆ ಕರೆ ಮಾಡಿ.', 'err.USERNAME_TAKEN': 'ಆ ಬಳಕೆದಾರ ಹೆಸರು ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ.', 'err.LIMIT_REACHED': 'ನೀವು ಮಿತಿ ತಲುಪಿದ್ದೀರಿ.',
 
   'time.min': '{n} ನಿಮಿಷದ ಹಿಂದೆ', 'time.hour': '{n} ಗಂಟೆ ಹಿಂದೆ', 'time.day': '{n} ದಿನದ ಹಿಂದೆ',
   'stock.verified': 'ದೃಢೀಕೃತ · {ago}', 'stock.unverified': 'ದೃಢೀಕರಿಸಿಲ್ಲ · {ago}', 'stock.none': 'ದಾಸ್ತಾನು ಇಲ್ಲ', 'stock.outOfStock': 'ದಾಸ್ತಾನು ಖಾಲಿ',
@@ -288,6 +292,7 @@ const kn = {
   'id.dropSub': 'ಇಡೀ ಹಾವನ್ನು 3 ಮೀಟರ್ ಅಥವಾ ಹೆಚ್ಚಿನ ಸುರಕ್ಷಿತ ದೂರದಿಂದ ಫೋಟೋ ತೆಗೆಯಿರಿ. ಹತ್ತಿರ ಹೋಗಬೇಡಿ.', 'id.camera': 'ಕ್ಯಾಮೆರಾ ತೆರೆಯಿರಿ', 'id.upload': 'ಫೈಲ್ ಅಪ್‌ಲೋಡ್',
   'id.distance': 'ಕನಿಷ್ಠ 3 ಮೀಟರ್ ದೂರದಲ್ಲಿರಿ. ಹತ್ತಿರ ಹೋಗುವ ಬದಲು ಜೂಮ್ ಬಳಸಿ.', 'id.analysing': 'ನಿಮ್ಮ ಫೋಟೋ ನೋಡಲಾಗುತ್ತಿದೆ…', 'id.results': 'ಸಂಭಾವ್ಯ ಹೋಲಿಕೆಗಳು',
   'id.demo': 'ಡೆಮೊ ಫಲಿತಾಂಶ: ಕೇವಲ ಮಾದರಿ ಊಹೆಗಳು', 'id.noGuess': 'ಇದು ಏನೆಂದು ಹೇಳಲಾಗಲಿಲ್ಲ. ಸ್ಪಷ್ಟ ಫೋಟೋ ಪ್ರಯತ್ನಿಸಿ.', 'id.readMore': 'ಇನ್ನಷ್ಟು ಓದಿ', 'id.another': 'ಇನ್ನೊಂದು ಫೋಟೋ ಪ್ರಯತ್ನಿಸಿ',
+  'id.cameraTitle': 'ಫೋಟೋ ತೆಗೆಯಿರಿ', 'id.capture': 'ಫೋಟೋ ತೆಗೆಯಿರಿ', 'id.cameraDenied': 'ಕ್ಯಾಮೆರಾ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ ಅಥವಾ ಲಭ್ಯವಿಲ್ಲ. ಬದಲಿಗೆ ಫೋಟೋ ಫೈಲ್ ಆರಿಸಿ.',
   'id.disclaimer': 'ಇದು ತಪ್ಪಾಗಿರಬಹುದು.', 'id.unreadable': 'ಆ ಫೋಟೋ ಓದಲಾಗಲಿಲ್ಲ.', 'id.safetyTitle': 'ಸುರಕ್ಷಿತವಾಗಿರಿ',
   'id.safe1': 'ಚಲನೆ ನಿಲ್ಲಿಸಿ, ನಿಧಾನವಾಗಿ ಹಿಂದೆ ಸರಿಯಿರಿ.', 'id.safe2': 'ಮಕ್ಕಳು ಮತ್ತು ಸಾಕುಪ್ರಾಣಿಗಳನ್ನು ದೂರವಿಡಿ.', 'id.safe3': 'ಹಾವನ್ನು ಮುಟ್ಟಬೇಡಿ, ಸಿಕ್ಕಿಸಬೇಡಿ, ಅದರ ಮೇಲೆ ವಸ್ತು ಎಸೆಯಬೇಡಿ.', 'id.safe4': 'ಅದು ಕಾಣುವ ಜಾಗದಲ್ಲಿರಿ ಮತ್ತು ಹಾವು ಹಿಡಿಯುವವರಿಗೆ ಕರೆ ಮಾಡಿ.',
   'id.commonTitle': 'ಸಾಮಾನ್ಯ ಹಾವುಗಳು', 'id.browse': 'ಎಲ್ಲಾ ಹಾವುಗಳನ್ನು ನೋಡಿ', 'id.v.YES': 'ವಿಷಕಾರಿ', 'id.v.NO': 'ವಿಷರಹಿತ', 'id.v.UNSURE': 'ಖಚಿತವಿಲ್ಲ',
@@ -329,6 +334,7 @@ const kn = {
   'foot.dial': '{n} ಗೆ ಕರೆ', 'foot.poison': 'ವಿಷ ಸಹಾಯವಾಣಿ', 'foot.explore': 'ಅನ್ವೇಷಿಸಿ', 'foot.staff': 'ಸಿಬ್ಬಂದಿ ಪೋರ್ಟಲ್', 'foot.install': 'ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ',
   'chat.title': 'ಸಹಾಯ ಚಾಟ್', 'chat.sub': 'ಹಾವುಗಳು, ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ, ಆಸ್ಪತ್ರೆಗಳು ಮತ್ತು ಆ್ಯಪ್ ಸಹಾಯ', 'chat.bite': 'ಯಾರಿಗಾದರೂ ಕಡಿದಿದೆಯೇ?', 'chat.open': 'ಸಹಾಯ ಚಾಟ್ ತೆರೆಯಿರಿ',
   'chat.hello': 'ನಮಸ್ಕಾರ! ಹಾವುಗಳು, ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ ಹಂತಗಳು, ಆಸ್ಪತ್ರೆಗಳು ಮತ್ತು ಈ ಆ್ಯಪ್ ಬಗ್ಗೆ ನಾನು ಸಹಾಯ ಮಾಡಬಲ್ಲೆ. ಯಾರಿಗಾದರೂ ಕಡಿದಿದ್ದರೆ ಈಗಲೇ 108 ಗೆ ಕರೆ ಮಾಡಿ.', 'chat.placeholder': 'ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಬರೆಯಿರಿ', 'chat.send': 'ಕಳುಹಿಸಿ',
+  'chat.quick': 'ತ್ವರಿತ ಉತ್ತರ: ಸಹಾಯಕ ಈಗ ಬ್ಯುಸಿ ಇದೆ.', 'admin.import': 'CSV ಆಮದು', 'admin.importDone': '{c} ಸೇರಿಸಲಾಗಿದೆ, {u} ನವೀಕರಿಸಲಾಗಿದೆ, {s} ಬಿಟ್ಟಿದೆ', 'admin.importWhy': 'ಕೆಲವು ಸಾಲುಗಳನ್ನು ಬಿಡಲಾಗಿದೆ',
   'chat.s1': 'ಕಡಿತದ ನಂತರ ನಾನು ಏನು ಮಾಡಬೇಕು?', 'chat.s2': 'ಆಸ್ಪತ್ರೆ ಹೇಗೆ ಹುಡುಕುವುದು?', 'chat.s3': 'ಹಾವನ್ನು ಹೇಗೆ ಗುರುತಿಸುವುದು?', 'chat.fallbackCall': 'ಯಾರಿಗಾದರೂ ಕಡಿದಿದ್ದರೆ {n} ಗೆ ಕರೆ ಮಾಡಿ.',
   'offline.bar': 'ನೀವು ಆಫ್‌ಲೈನ್ ಇದ್ದೀರಿ. ಪ್ರಥಮ ಚಿಕಿತ್ಸೆ ಮತ್ತು ಹಾವುಗಳು ಇನ್ನೂ ಕೆಲಸ ಮಾಡುತ್ತವೆ. ತುರ್ತಿಗೆ 108 ಗೆ ಕರೆ ಮಾಡಿ.', 'nf.title': 'ಪುಟ ಸಿಗಲಿಲ್ಲ', 'nf.text': 'ಈ ಪುಟ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.', 'map.label': 'ಆಸ್ಪತ್ರೆಗಳ ನಕ್ಷೆ',
 };

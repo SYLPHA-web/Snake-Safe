@@ -171,17 +171,17 @@ export function mapSvg(hospitals, user, { w = 640, h = 320 } = {}) {
       ${x.stock.status === 'VERIFIED' ? `<circle class="pin-ring" cx="${cx}" cy="${cy}" r="9" fill="${c}" opacity=".35"/>` : ''}
       <circle cx="${cx}" cy="${cy}" r="9" fill="${c}" stroke="#fff" stroke-width="3"/>
       <circle cx="${cx}" cy="${cy}" r="3" fill="#fff"/>
-      <text x="${cx}" y="${(+cy - 15).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#0b1c30" stroke="#fff" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round">${esc(shortName(x.name))}</text>
+      <text class="m-label" x="${cx}" y="${(+cy - 15).toFixed(1)}" text-anchor="middle">${esc(shortName(x.name))}</text>
     </a>`;
   }).join('');
   const me = user ? `<g><circle cx="${X(user.lng).toFixed(1)}" cy="${Y(user.lat).toFixed(1)}" r="16" fill="#1f6feb" opacity=".18"/><circle cx="${X(user.lng).toFixed(1)}" cy="${Y(user.lat).toFixed(1)}" r="7" fill="#1f6feb" stroke="#fff" stroke-width="3"/></g>` : '';
   const grid = Array.from({ length: 9 }, (_, i) => `<path d="M${(i + 1) * w / 10} 0V${h}" />`).join('') + Array.from({ length: 4 }, (_, i) => `<path d="M0 ${(i + 1) * h / 5}H${w}" />`).join('');
   return raw(`<div class="map"><svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(t('map.label'))}">
-    <rect width="${w}" height="${h}" fill="#e8eef0"/>
-    <g stroke="#d3dde0" stroke-width="1">${grid}</g>
-    <path d="M-10 ${h * .72} C ${w * .2} ${h * .55}, ${w * .35} ${h * .9}, ${w * .55} ${h * .62} S ${w * .85} ${h * .3}, ${w + 10} ${h * .4}" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>
-    <path d="M${w * .18} -10 C ${w * .25} ${h * .3}, ${w * .12} ${h * .6}, ${w * .3} ${h + 10}" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-    <path d="M-10 ${h * .2} C ${w * .3} ${h * .1}, ${w * .5} ${h * .35}, ${w + 10} ${h * .12}" fill="none" stroke="#c9dfee" stroke-width="12" stroke-linecap="round" opacity=".7"/>
+    <rect class="m-bg" width="${w}" height="${h}"/>
+    <g class="m-grid">${grid}</g>
+    <path d="M-10 ${h * .72} C ${w * .2} ${h * .55}, ${w * .35} ${h * .9}, ${w * .55} ${h * .62} S ${w * .85} ${h * .3}, ${w + 10} ${h * .4}" class="m-road" stroke-width="9"/>
+    <path d="M${w * .18} -10 C ${w * .25} ${h * .3}, ${w * .12} ${h * .6}, ${w * .3} ${h + 10}" class="m-road" stroke-width="6"/>
+    <path d="M-10 ${h * .2} C ${w * .3} ${h * .1}, ${w * .5} ${h * .35}, ${w + 10} ${h * .12}" class="m-river" stroke-width="12"/>
     ${me}${pins}
   </svg></div>`);
 }

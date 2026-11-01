@@ -1,9 +1,25 @@
 // Header with React-Bits-style pill nav (circle fill + label swap, driven by GSAP), mobile bottom nav, flow header, footer.
-import { html, toHtml, $, $$, session } from './util.js';
+import { html, toHtml, $, $$, session, store } from './util.js';
 import { icon } from './icons.js';
 import { t, getLang, setLang } from './i18n.js';
 import { gsap, motionOn } from './motion.js';
 import { telLink } from './ui.js';
+
+/** Sliding light/dark switch. Reused by the staff and admin headers. */
+export function themeSwitch() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  return html`<button class="theme-switch" type="button" role="switch" aria-checked="${String(dark)}" aria-label="${t('theme.toggle')}" title="${t('theme.toggle')}" data-theme-toggle>
+    <span class="ts-ico ts-sun">${icon('sun', 14)}</span><span class="ts-ico ts-moon">${icon('moon', 14)}</span>
+    <span class="ts-knob">${icon('sun', 16, 'k-sun')}${icon('moon', 16, 'k-moon')}</span></button>`;
+}
+
+export function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  store.set('ss-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0a121e' : '#003d1f');
+  $$('.theme-switch').forEach((b) => b.setAttribute('aria-checked', String(theme === 'dark')));
+}
 
 const ITEMS = [
   ['/', 'nav.home'],
@@ -73,9 +89,9 @@ function render() {
       ${brandHtml()}
       <div class="flow-step"><i>${flow.step}</i><span class="t">${t('flow.step', { n: flow.step, total: flow.total })}</span></div>
       <div class="top-actions">
-        ${langToggle()}
+        ${toHtml(themeSwitch())}${langToggle()}
         <a class="btn btn-red btn-sm" href="${telLink(cfg.emergencyNumber)}">${toHtml(icon('phone', 15))} ${t('flow.call', { n: cfg.emergencyNumber })}</a>
-        <a class="btn btn-soft btn-sm" href="#/" data-exit-flow>${toHtml(icon('x', 15))} ${t('flow.exit')}</a>
+        <a class="btn btn-soft btn-sm" href="#/" data-exit-flow>${toHtml(icon('x', 15))}<span class="t">${t('flow.exit')}</span></a>
       </div></div><div class="flow-progress"><span style="width:${(flow.step / flow.total) * 100}%"></span></div></div>`;
     bt.innerHTML = '';
   } else {
@@ -88,7 +104,7 @@ function render() {
             <span class="label-stack"><span class="pill-label">${t(k)}</span><span class="pill-label-hover" aria-hidden="true">${t(k)}</span></span>
           </a></li>`).join('')}</ul></nav>
         <div class="top-actions">
-          ${langToggle()}
+          ${toHtml(themeSwitch())}${langToggle()}
           <a class="sos-btn" href="#/emergency">${toHtml(icon('sos', 16))} ${t('nav.sos')}</a>
           <a class="avatar" href="#/profile" aria-label="${t('nav.profile')}">${toHtml(icon('user', 19))}</a>
         </div></div></header>`;
@@ -174,6 +190,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setu
 
 // global chrome clicks
 document.addEventListener('click', async (e) => {
+  if (e.target.closest('[data-theme-toggle]')) { setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); return; }
   if (e.target.closest('[data-lang-toggle]')) { setLang(getLang() === 'kn' ? 'en' : 'kn'); return; }
   if (e.target.closest('[data-install]') && installEvent) { installEvent.prompt(); await installEvent.userChoice; installEvent = null; $$('[data-install]').forEach((b) => b.classList.add('hidden')); }
 });

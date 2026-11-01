@@ -90,7 +90,7 @@ public class AiSnakeIdentifier implements SnakeIdentifier {
         } catch (ApiException e) {
             throw e;
         } catch (RuntimeException e) {
-            log.warn("Photo identification call failed: {}", e.getClass().getSimpleName());
+            log.warn("Photo identification call failed: {}: {}", e.getClass().getSimpleName(), String.valueOf(e.getMessage()).replaceAll("\\s+", " ").substring(0, Math.min(300, String.valueOf(e.getMessage()).length())));
             throw new ApiException(HttpStatus.BAD_GATEWAY, "AI_ERROR",
                     "Photo identification is not available right now. If someone was bitten, call 108.");
         }

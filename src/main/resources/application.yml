@@ -13,7 +13,7 @@ spring:
     default-property-inclusion: non_null
 
 server:
-  port: 8080
+  port: ${PORT:8080}
   shutdown: graceful
 
 springdoc:
@@ -32,13 +32,18 @@ app:
   poison-helpline: "1800-116-117"
   verified-hours: 2
   default-language: en
-  otp-mode: DEMO            # DEMO (fixed code 123456) | SMS
-  identify-mode: STUB       # STUB | AI
-  chat-mode: STUB           # STUB | AI
+  otp-mode: ${OTP_MODE:DEMO}            # DEMO (fixed code 123456) | SMS
+  identify-mode: ${IDENTIFY_MODE:STUB}  # STUB | AI
+  chat-mode: ${CHAT_MODE:STUB}          # STUB | AI
   cancel-window-seconds: 5
   no-reply-minutes: 2
   log-chats: false
   seed-sample-data: true
+  seed-reference-data: true   # real snake species list, filled only when the snakes table is empty
+  seed-staff-password: ${SEED_STAFF_PASSWORD:staff123}
+  admin-username: ${ADMIN_USERNAME:}   # first admin, created at start-up if it does not exist
+  admin-password: ${ADMIN_PASSWORD:}   # at least 10 characters
+  trust-proxy: ${TRUST_PROXY:false}    # true behind Vercel / a load balancer: use X-Forwarded-For for the visitor's IP
   timezone: Asia/Kolkata
   photo-storage: LOCAL      # LOCAL | SUPABASE
   photo-dir: ./data/snake-photos
@@ -47,7 +52,8 @@ app:
   jwt-hours: 12
   ai:
     api-key: ${AI_API_KEY:}
-    model: claude-opus-5-5
+    model: ${AI_MODEL:claude-opus-5-5}
+    base-url: ${AI_BASE_URL:}
   supabase:
     url: ${SUPABASE_URL:}
     service-key: ${SUPABASE_SERVICE_KEY:}
@@ -80,6 +86,9 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:5}   # Supabase session pooler allows few connections
+      connection-timeout: 20000
   jpa:
     hibernate:
       ddl-auto: update

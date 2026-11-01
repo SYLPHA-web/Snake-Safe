@@ -10,6 +10,8 @@ The app has a complete backend (12 modules) and a plain JavaScript frontend serv
 - Demo profile = in-memory H2 with sample data. Nothing else to install.
 - Supabase profile = PostgreSQL via environment variables, no code change
 
+**Going live (Supabase + a backend host + Vercel): read [DEPLOY.md](DEPLOY.md).** Vercel and Supabase cannot run the Java backend by themselves; the guide explains what to use.
+
 ## Run it
 
 Needs only a JDK (25, or 21 - see below) and Maven.
@@ -69,6 +71,8 @@ The chat button (bottom right) is on every normal page.
 
 **Needs HTTPS in production.** Phones only share location, allow camera capture and install the PWA on `https://` pages (`http://localhost` is fine for testing).
 
+**Light and dark theme.** A sliding switch in every header toggles it; the choice is remembered, and the first visit follows the device setting.
+
 **Changing the look.** Colours, radii and fonts are CSS variables at the top of `css/app.css`; markup is class-based, so a new design can replace it page by page.
 
 ## Settings in one place
@@ -102,6 +106,13 @@ Public ones are served at `GET /api/config`. Secrets are never in this file: the
 | `SUPABASE_URL` | `https://<project-ref>.supabase.co` | Photo storage on Supabase |
 | `SUPABASE_SERVICE_KEY` | Service role key (server only) | Photo storage on Supabase |
 | `AI_API_KEY` | Anthropic API key | Only when `identify-mode` or `chat-mode` is `AI` |
+| `CHAT_MODE`, `IDENTIFY_MODE` | `AI` or `STUB` (default `STUB`) | Optional |
+| `AI_MODEL`, `AI_BASE_URL` | Model name (default `claude-opus-5-5`) and optional API address | Optional |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD` | First admin, created at start-up (password 10+ characters) | Needed on a fresh real database |
+| `SEED_STAFF_PASSWORD` | Password of the demo staff accounts when sample data is seeded (default `staff123`) | Optional |
+| `TRUST_PROXY` | `true` behind Vercel or a load balancer, so rate limits use each visitor's own IP | Needed when proxied |
+| `OTP_MODE` | `DEMO` (code 123456) or `SMS` (needs an SMS provider class) | Optional |
+| `PORT`, `DB_POOL_SIZE` | Port (set by hosts) and database pool size (default 5) | Optional |
 | `SEED_SAMPLE_DATA` | `true` to seed sample data on Supabase | Optional (default false there) |
 
 ## Switch to Supabase
@@ -304,4 +315,5 @@ Pluggable parts, so providers can change without touching controllers: `SmsSende
 - The rate limiter is in memory, which is right for one server. If you run several servers, move it to a shared store.
 - Kannada snake names and first-aid text should be reviewed by a native speaker and a doctor before real use. The first-aid file is `src/main/resources/first-aid.json`.
 - The default phone numbers of sample hospitals and catchers are made up.
+- 30 real Karnataka snake species are loaded on first start (`SnakeCatalog`). More can be bulk-imported from a CSV (for example a Kaggle snake dataset) in Admin, Snakes, Import CSV. Hospitals can be imported the same way: see `docs/` for templates.
 - Snake pictures are drawn placeholders until real photos exist: put `<slug>.jpg` files in `static/img/snakes/` (for example `indian-cobra.jpg`) and they fade in automatically.

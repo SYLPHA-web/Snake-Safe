@@ -26,9 +26,14 @@ public record AppProperties(
         int jwtHours,
         Ai ai,
         Supabase supabase,
-        Limits limits) {
+        Limits limits,
+        boolean trustProxy,
+        boolean seedReferenceData,
+        String adminUsername,
+        String adminPassword,
+        String seedStaffPassword) {
 
-    public record Ai(String apiKey, String model) {
+    public record Ai(String apiKey, String model, String baseUrl) {
     }
 
     public record Supabase(String url, String serviceKey, String bucket) {

@@ -5,6 +5,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.snakesafe.config.AppProperties;
@@ -15,6 +17,7 @@ import com.snakesafe.web.ApiException;
 @Service
 public class ChatService {
 
+    private static final Logger log = LoggerFactory.getLogger(ChatService.class);
     private static final int MAX_HISTORY = 10;
     private static final int MAX_TURN_LENGTH = 1000;
     private static final List<String> BITE_WORDS = List.of("bite", "bitten", "bit me", "bit my", "bit him", "bit her",
@@ -23,22 +26,28 @@ public class ChatService {
     public record Turn(String role, String content) {
     }
 
+    /** fallback = the AI assistant could not answer, so a fixed safe answer was used instead. */
+    public record Answer(String reply, boolean fallback) {
+    }
+
     private final ChatProvider provider;
+    private final CannedReplies canned;
     private final ChatLogRepository logs;
     private final RateLimiter limiter;
     private final AppProperties props;
     private final Clock clock;
 
-    public ChatService(ChatProvider provider, ChatLogRepository logs, RateLimiter limiter, AppProperties props,
-            Clock clock) {
+    public ChatService(ChatProvider provider, CannedReplies canned, ChatLogRepository logs, RateLimiter limiter,
+            AppProperties props, Clock clock) {
         this.provider = provider;
+        this.canned = canned;
         this.logs = logs;
         this.limiter = limiter;
         this.props = props;
         this.clock = clock;
     }
 
-    public String chat(String rawMessage, String language, List<Turn> history, String ip) {
+    public Answer chat(String rawMessage, String language, List<Turn> history, String ip) {
         limiter.check("chat:" + ip, props.limits().chatPerMinute(), Duration.ofMinutes(1));
         String message = Sanitizer.clean(rawMessage);
         if (message == null || message.isEmpty()) {
@@ -57,8 +66,20 @@ public class ChatService {
                 .skip(Math.max(0, history.size() - MAX_HISTORY))
                 .toList();
 
-        String reply = provider.reply(message, lang, turns);
-        reply = reply == null || reply.isBlank() ? fallback(lang) : reply.strip();
+        String reply = null;
+        boolean fallback = false;
+        try {
+            reply = provider.reply(message, lang, turns);
+        } catch (RuntimeException e) {
+            String why = e.getMessage() == null ? "" : e.getMessage().replaceAll("\\s+", " ");
+            log.warn("Chat assistant failed ({}: {}). Using the built-in answer.", e.getClass().getSimpleName(),
+                    why.length() > 300 ? why.substring(0, 300) : why);
+        }
+        if (reply == null || reply.isBlank()) {
+            reply = canned.reply(message, lang);
+            fallback = true;
+        }
+        reply = reply.strip();
         // Safety net that does not depend on the provider: a mentioned bite always starts with "Call 108 now"
         String callNow = "Call " + props.emergencyNumber() + " now.";
         if (mentionsBite(message) && !reply.startsWith(callNow)) {
@@ -75,13 +96,7 @@ public class ChatService {
             entry.createdAt = clock.instant();
             logs.save(entry);
         }
-        return reply;
-    }
-
-    private String fallback(String lang) {
-        return "kn".equals(lang)
-                ? "ಕ್ಷಮಿಸಿ, ಈಗ ಉತ್ತರ ನೀಡಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ. ಹಾವು ಕಡಿದಿದ್ದರೆ " + props.emergencyNumber() + " ಗೆ ಕರೆ ಮಾಡಿ."
-                : "Sorry, I cannot answer that right now. If someone was bitten, call " + props.emergencyNumber() + " now.";
+        return new Answer(reply, fallback);
     }
 
     static boolean mentionsBite(String message) {

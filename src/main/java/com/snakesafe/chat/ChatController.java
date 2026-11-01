@@ -23,7 +23,7 @@ public class ChatController {
             @Size(max = 30) List<@Valid HistoryItem> history) {
     }
 
-    public record ChatResponse(String reply) {
+    public record ChatResponse(String reply, boolean fallback) {
     }
 
     private final ChatService chat;
@@ -36,6 +36,7 @@ public class ChatController {
     public ChatResponse chat(@Valid @RequestBody ChatRequest req, HttpServletRequest http) {
         List<ChatService.Turn> history = req.history() == null ? List.of()
                 : req.history().stream().map(h -> new ChatService.Turn(h.role(), h.content())).toList();
-        return new ChatResponse(chat.chat(req.message(), req.language(), history, http.getRemoteAddr()));
+        ChatService.Answer a = chat.chat(req.message(), req.language(), history, http.getRemoteAddr());
+        return new ChatResponse(a.reply(), a.fallback());
     }
 }

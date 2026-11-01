@@ -3,6 +3,7 @@ import { api, tokens } from '../api.js';
 import { icon } from '../icons.js';
 import { t } from '../i18n.js';
 import { stockChip, openModal, toast, errorText } from '../ui.js';
+import { themeSwitch } from '../nav.js';
 
 export const chrome = 'bare';
 export const title = 'staff.title';
@@ -54,7 +55,7 @@ export default async function staff(el, ctx) {
         <span class="brand-mark">${icon('hospital', 24)}</span>
         <div><b style="font-size:18px;color:var(--green)">${h.name}</b><div class="muted xs">${t('staff.desk')}</div></div>
         <div class="top-actions"><span class="row small bold" style="gap:8px"><i class="dot"></i>${S.home.staffName}</span>
-          <button class="lang-toggle" data-lang-toggle type="button"><span class="${t('lang.code') === 'en' ? 'on' : ''}">EN</span><span class="${t('lang.code') === 'kn' ? 'on' : ''}">ಕನ್ನಡ</span></button>
+          ${themeSwitch()}<button class="lang-toggle" data-lang-toggle type="button"><span class="${t('lang.code') === 'en' ? 'on' : ''}">EN</span><span class="${t('lang.code') === 'kn' ? 'on' : ''}">ಕನ್ನಡ</span></button>
           <button class="btn btn-soft btn-sm" data-act="logout">${icon('logout', 15)} ${t('staff.logout')}</button></div></div></header>
       <div class="container page" style="padding-bottom:50px">
         <div class="split">

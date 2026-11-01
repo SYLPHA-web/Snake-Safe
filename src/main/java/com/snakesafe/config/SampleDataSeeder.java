@@ -21,6 +21,7 @@ import com.snakesafe.hospital.Hospital;
 import com.snakesafe.hospital.HospitalRepository;
 import com.snakesafe.hospital.StockRepository;
 import com.snakesafe.snake.Snake;
+import com.snakesafe.snake.SnakeCatalog;
 import com.snakesafe.snake.SnakeRepository;
 import com.snakesafe.staff.Staff;
 import com.snakesafe.staff.StaffRepository;
@@ -75,19 +76,20 @@ public class SampleDataSeeder implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        if (props.seedReferenceData()) {
+            seedSnakes();
+        }
+        boolean ownAdmin = bootstrapAdmin();
         if (!props.seedSampleData()) {
             return;
         }
         if (hospitals.count() == 0) {
             seedHospitals();
         }
-        if (snakes.count() == 0) {
-            seedSnakes();
-        }
         if (catchers.count() == 0) {
             seedCatchers();
         }
-        if (staff.findByUsernameIgnoreCase(ADMIN_USERNAME).isEmpty()) {
+        if (!ownAdmin && staff.findByUsernameIgnoreCase(ADMIN_USERNAME).isEmpty()) {
             Staff admin = new Staff();
             admin.username = ADMIN_USERNAME;
             admin.passwordHash = encoder.encode(ADMIN_PASSWORD);
@@ -118,7 +120,7 @@ public class SampleDataSeeder implements ApplicationRunner {
 
             Staff s = new Staff();
             s.username = "staff-" + h.city().toLowerCase();
-            s.passwordHash = encoder.encode(STAFF_PASSWORD);
+            s.passwordHash = encoder.encode(props.seedStaffPassword());
             s.name = "Sample Staff " + h.city();
             s.role = Role.STAFF;
             s.hospitalId = hospital.id;
@@ -147,59 +149,50 @@ public class SampleDataSeeder implements ApplicationRunner {
         }
     }
 
+    /** Adds any species from the catalog that is not in the table yet. Never changes rows that already exist. */
     private void seedSnakes() {
-        String western = "Uttara Kannada, Shivamogga, Chikkamagaluru, Kodagu, Udupi, Dakshina Kannada";
-        String dry = "Kalaburagi, Vijayapura, Bagalkot, Raichur, Ballari, Koppal, Chitradurga, Tumakuru";
-        snake("Indian Cobra", "ನಾಗರಹಾವು", "Naja naja", true,
-                "A medium to large snake that spreads a hood when alarmed. Brown, grey or black, sometimes with a spectacle mark on the hood.",
-                "Fields, villages, farmland, rocky areas and forest edges. Often near rat holes and water.", "Statewide");
-        snake("King Cobra", "ಕಾಳಿಂಗ ಸರ್ಪ", "Ophiophagus hannah", true,
-                "The longest venomous snake in the world. Olive, brown or black with pale bands, and a tall hood. Eats other snakes.",
-                "Dense evergreen and moist forests of the Western Ghats.", western);
-        snake("Common Krait", "ಕಟ್ಟು ಹಾವು", "Bungarus caeruleus", true,
-                "A slim, shiny black or blue-black snake with thin white bands. Active at night, often found indoors in villages.",
-                "Farmland, village homes, dry fields and near water. Rests in dark corners during the day.", "Statewide");
-        snake("Russell's Viper", "ಕೊಳಕು ಮಂಡಲ", "Daboia russelii", true,
-                "A heavy-bodied snake with a pattern of large dark rings along a brown back. Hisses loudly when disturbed.",
-                "Open grassland, farms, scrub and rocky ground. Often found in crop fields.", "Statewide");
-        snake("Saw-scaled Viper", "ಗರಗಸ ಮಂಡಲ", "Echis carinatus", true,
-                "A small, thin snake, sandy or brown with a pale zig-zag line. Rubs its scales together with a rasping sound.",
-                "Dry, sandy and rocky country. Hides under stones and in loose soil.", dry);
-        snake("Malabar Pit Viper", "ಮಲಬಾರ್ ಪಿಟ್ ವೈಪರ್", "Trimeresurus malabaricus", true,
-                "A small green, yellow or brown viper with a triangular head. Often rests on low branches.",
-                "Forests, coffee and tea plantations and bushes in the Western Ghats.", western);
-        snake("Indian Rat Snake", "ಕೇರೆ ಹಾವು", "Ptyas mucosa", false,
-                "A long, fast snake, pale brown to black, with dark markings on the back half. Often mistaken for a cobra.",
-                "Farms, villages, gardens, trees and rocky places.", "Statewide");
-        snake("Indian Rock Python", "ಹೆಬ್ಬಾವು", "Python molurus", false,
-                "A very large, heavy, non-venomous snake with brown blotches on a pale body. Squeezes its prey.",
-                "Forests, grassland near water, rocky hills and farmland edges.",
-                "Uttara Kannada, Shivamogga, Kodagu, Chikkamagaluru, Mysuru, Chamarajanagar");
-        snake("Checkered Keelback", "ನೀರು ಹಾವು", "Fowlea piscator", false,
-                "A common water snake with a checkered olive and dark pattern. Often seen in ponds and paddy fields.",
-                "Ponds, lakes, streams, paddy fields and wet ground.", "Statewide");
-        snake("Common Wolf Snake", "ವುಲ್ಫ್ ಹಾವು", "Lycodon aulicus", false,
-                "A small, thin brown snake with pale bands that fade with age. Often found in houses at night, and looks like a krait.",
-                "Houses, outbuildings, gardens, stone walls and rubbish heaps.", "Statewide");
-        snake("Indian Sand Boa", "ಮಣ್ಣುಮುಕ್ಕ ಹಾವು", "Eryx johnii", false,
-                "A short, thick snake with a blunt tail that looks like its head. Brown with darker patches. Spends most time under loose soil.",
-                "Dry, sandy and rocky ground and farmland.", dry);
-        snake("Green Vine Snake", "ಹಸಿರು ಹಾವು", "Ahaetulla nasuta", true,
-                "A very thin, bright green snake with a long pointed head. Hard to see in leaves. Has mild venom, but any bite should still be treated as an emergency.",
-                "Bushes, hedges, gardens and forest edges.", "Statewide");
+        int added = 0;
+        for (SnakeCatalog.Entry e : SnakeCatalog.ALL) {
+            if (snakes.findFirstByScientificNameIgnoreCase(e.scientificName()).isPresent()) {
+                continue;
+            }
+            Snake s = new Snake();
+            s.nameEn = e.nameEn();
+            s.nameKn = e.nameKn();
+            s.scientificName = e.scientificName();
+            s.venomous = e.venomous();
+            s.description = e.description();
+            s.habitat = e.habitat();
+            s.districts = e.districts();
+            s.imageUrl = "/img/snakes/" + e.nameEn().toLowerCase().replace("'", "").replace(' ', '-') + ".jpg";
+            snakes.save(s);
+            added++;
+        }
+        if (added > 0) {
+            log.info("Added {} snake species from the reference list", added);
+        }
     }
 
-    private void snake(String en, String kn, String scientific, boolean venomous, String description, String habitat,
-            String districts) {
-        Snake s = new Snake();
-        s.nameEn = en;
-        s.nameKn = kn;
-        s.scientificName = scientific;
-        s.venomous = venomous;
-        s.description = description;
-        s.habitat = habitat;
-        s.districts = districts;
-        s.imageUrl = "/img/snakes/" + en.toLowerCase().replace("'", "").replace(' ', '-') + ".jpg";
-        snakes.save(s);
+    /** First admin from ADMIN_USERNAME / ADMIN_PASSWORD (at least 10 characters). Created once, never overwritten. */
+    private boolean bootstrapAdmin() {
+        String user = props.adminUsername();
+        String pass = props.adminPassword();
+        if (user == null || user.isBlank()) {
+            return false;
+        }
+        if (pass == null || pass.length() < 10) {
+            log.warn("ADMIN_USERNAME is set but ADMIN_PASSWORD is missing or shorter than 10 characters: no admin was created");
+            return false;
+        }
+        if (staff.findByUsernameIgnoreCase(user.strip()).isEmpty()) {
+            Staff admin = new Staff();
+            admin.username = user.strip();
+            admin.passwordHash = encoder.encode(pass);
+            admin.name = "Administrator";
+            admin.role = Role.ADMIN;
+            staff.save(admin);
+            log.info("Created admin account '{}'", admin.username);
+        }
+        return true;
     }
 }

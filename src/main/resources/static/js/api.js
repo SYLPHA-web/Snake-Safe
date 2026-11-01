@@ -28,9 +28,14 @@ export async function api(path, { method = 'GET', body, auth, signal } = {}) {
     throw new ApiError('OFFLINE', 'No connection.', 0);
   }
   if (res.status === 204) return null;
+  const contentType = res.headers.get('content-type') || '';
   const text = await res.text();
   let data = null;
   if (text) { try { data = JSON.parse(text); } catch { data = text; } }
+  if (typeof data === 'string' && (contentType.includes('text/html') || !res.ok)) {
+    // the server answered with a web page instead of data: the backend is not reachable from here
+    throw new ApiError('BACKEND_UNREACHABLE', 'The server is not reachable.', res.status || 502);
+  }
   if (!res.ok) {
     if (res.status === 401 && auth) { tokens.clear(auth); window.dispatchEvent(new CustomEvent('authexpired', { detail: auth })); }
     throw new ApiError(data?.error || 'ERROR', data?.message || 'Something went wrong.', res.status);

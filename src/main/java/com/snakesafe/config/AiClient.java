@@ -30,7 +30,12 @@ public class AiClient {
                                 "The assistant is not set up on this server. If someone was bitten, call "
                                         + props.emergencyNumber() + ".");
                     }
-                    local = AnthropicOkHttpClient.builder().apiKey(key).build();
+                    var builder = AnthropicOkHttpClient.builder().apiKey(key);
+                    String baseUrl = props.ai().baseUrl();
+                    if (baseUrl != null && !baseUrl.isBlank()) {
+                        builder.baseUrl(baseUrl);
+                    }
+                    local = builder.build();
                     client = local;
                 }
             }

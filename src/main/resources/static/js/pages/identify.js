@@ -2,7 +2,7 @@ import { html, toHtml, $ } from '../util.js';
 import { api } from '../api.js';
 import { icon } from '../icons.js';
 import { t, nameOf } from '../i18n.js';
-import { telLink, toast, errorText, snakeImg } from '../ui.js';
+import { telLink, toast, errorText, snakeImg, openModal } from '../ui.js';
 
 export const chrome = 'full';
 export const title = 'nav.identify';
@@ -54,10 +54,12 @@ export default async function identify(el, ctx) {
       <div class="cam">${icon('camera', 26)}</div>
       <h3 style="font-size:19px">${t('id.drop')}</h3>
       <p class="muted small" style="max-width:380px">${t('id.dropSub')}</p>
-      <div class="row-wrap" style="justify-content:center;margin-top:6px">
-        <label class="btn" tabindex="0">${icon('camera', 16)} ${t('id.camera')}<input type="file" accept="image/*" capture="environment" class="sr-only" data-file></label>
-        <label class="btn btn-soft" tabindex="0">${icon('upload', 16)} ${t('id.upload')}<input type="file" accept="image/jpeg,image/png,image/webp,image/*" class="sr-only" data-file></label>
+      <div class="dz-actions">
+        <button type="button" class="btn" data-act="camera">${icon('camera', 16)} ${t('id.camera')}</button>
+        <button type="button" class="btn btn-soft" data-act="upload">${icon('upload', 16)} ${t('id.upload')}</button>
       </div>
+      <input type="file" accept="image/*" capture="environment" class="sr-only" id="in-cam" data-file tabindex="-1" aria-hidden="true">
+      <input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" id="in-up" data-file tabindex="-1" aria-hidden="true">
     </div>
     <div class="card-flat row" style="margin-top:14px;gap:12px">${icon('info', 20)}<span class="small">${t('id.distance')}</span></div>`;
 
@@ -103,9 +105,41 @@ export default async function identify(el, ctx) {
     }
   }
 
-  el.addEventListener('change', (e) => { if (e.target.matches('[data-file]')) handle(e.target.files[0]); });
-  el.addEventListener('click', (e) => { if (e.target.closest('[data-act="again"]')) show(idle()); });
-  el.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('label.btn')) { e.preventDefault(); e.target.click(); } });
+  let stopCamera = () => {};
+  ctx.onCleanup(() => stopCamera());
+
+  /** Phones use the native camera. Computers get a live camera window (or the file picker if there is no camera). */
+  async function openCamera() {
+    const phone = window.matchMedia('(pointer: coarse)').matches;
+    if (phone || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { $('#in-cam', el).click(); return; }
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }); } catch {
+      toast(t('id.cameraDenied'), 'err'); $('#in-up', el).click(); return;
+    }
+    stopCamera = () => stream.getTracks().forEach((tr) => tr.stop());
+    const m = openModal(html`<h3>${t('id.cameraTitle')}</h3>
+      <div class="cam-view"><video autoplay playsinline muted></video></div>
+      <p class="help">${t('id.distance')}</p>
+      <div class="actions"><button type="button" class="btn btn-soft" data-close>${t('common.cancel')}</button><button type="button" class="btn btn-red" data-shot>${icon('camera', 16)} ${t('id.capture')}</button></div>`,
+    { onClose: () => stopCamera() });
+    const video = m.el.querySelector('video');
+    video.srcObject = stream;
+    m.el.querySelector('[data-shot]').addEventListener('click', () => {
+      if (!video.videoWidth) return;
+      const c = document.createElement('canvas');
+      c.width = video.videoWidth; c.height = video.videoHeight;
+      c.getContext('2d').drawImage(video, 0, 0);
+      c.toBlob((b) => { m.close(); if (b) handle(new File([b], 'camera.jpg', { type: 'image/jpeg' })); }, 'image/jpeg', 0.9);
+    });
+  }
+
+  el.addEventListener('change', (e) => { if (e.target.matches('[data-file]')) { const f = e.target.files[0]; e.target.value = ''; handle(f); } });
+  el.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    if (b.dataset.act === 'again') show(idle());
+    else if (b.dataset.act === 'camera') openCamera();
+    else if (b.dataset.act === 'upload') $('#in-up', el).click();
+  });
   ['dragenter', 'dragover'].forEach((ev) => el.addEventListener(ev, (e) => { const d = e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.add('drag'); } }));
   el.addEventListener('dragleave', (e) => { const d = e.target.closest('#drop'); if (d) d.classList.remove('drag'); });
   el.addEventListener('drop', (e) => { const d = e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.remove('drag'); handle(e.dataTransfer.files[0]); } });

@@ -5,7 +5,7 @@ services:
     name: snakesafe-backend
     runtime: docker
     region: singapore          # closest Render region to India
-    plan: starter              # "free" sleeps after ~15 min idle (about a minute to wake): fine for a demo, not for emergencies
+    plan: free              # "free" sleeps after ~15 min idle (about a minute to wake): fine for a demo, not for emergencies
     healthCheckPath: /api/config
     autoDeploy: true
     envVars:

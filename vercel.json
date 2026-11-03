@@ -6,8 +6,8 @@
   "outputDirectory": "src/main/resources/static",
   "cleanUrls": false,
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://YOUR-BACKEND-HOST/api/:path*" },
-    { "source": "/manifest.webmanifest", "destination": "https://YOUR-BACKEND-HOST/manifest.webmanifest" }
+    { "source": "/api/:path*", "destination": "https://snakesafe-backend-k3mh.onrender.com/api/:path*" },
+    { "source": "/manifest.webmanifest", "destination": "https://snakesafe-backend-k3mh.onrender.com/manifest.webmanifest" }
   ],
   "headers": [
     {

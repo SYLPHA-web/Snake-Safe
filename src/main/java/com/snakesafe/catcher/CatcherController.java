@@ -9,6 +9,8 @@ import java.util.Locale;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.snakesafe.auth.AuthPrincipal;
 import com.snakesafe.auth.Phones;
+import com.snakesafe.auth.Role;
 import com.snakesafe.config.RateLimiter;
 import com.snakesafe.config.Sanitizer;
 import com.snakesafe.hospital.Geo;
@@ -86,12 +90,16 @@ public class CatcherController {
 
     @PostMapping("/api/rescues")
     @ResponseStatus(HttpStatus.CREATED)
-    public RescueView request(@Valid @RequestBody RescueCreate req, HttpServletRequest http) {
+    @Transactional
+    public RescueView request(@Valid @RequestBody RescueCreate req,
+            @AuthenticationPrincipal AuthPrincipal me,
+            HttpServletRequest http) {
         limiter.check("rescue:" + http.getRemoteAddr(), 5, Duration.ofMinutes(10));
         Catcher c = catchers.findById(req.catcherId()).filter(x -> x.active)
                 .orElseThrow(() -> ApiException.notFound("CATCHER_NOT_FOUND", "Snake catcher not found."));
         Rescue r = new Rescue();
         r.id = UUID.randomUUID().toString();
+        r.userId = me != null && me.role() == Role.USER ? me.id() : null;
         r.catcherId = c.id;
         r.lat = req.lat();
         r.lng = req.lng();
@@ -107,6 +115,28 @@ public class CatcherController {
     public RescueView rescue(@PathVariable String id) {
         Rescue r = rescues.findById(id)
                 .orElseThrow(() -> ApiException.notFound("RESCUE_NOT_FOUND", "Rescue request not found."));
+        return toView(r, catchers.findById(r.catcherId).orElse(null));
+    }
+
+    @PostMapping("/api/rescues/{id}/cancel")
+    @Transactional
+    public RescueView cancel(@PathVariable String id, @AuthenticationPrincipal AuthPrincipal me) {
+        Rescue r = rescues.findById(id)
+                .orElseThrow(() -> ApiException.notFound("RESCUE_NOT_FOUND", "Rescue request not found."));
+        if (r.userId != null) {
+            if (me == null || me.role() != Role.USER || !r.userId.equals(me.id())) {
+                throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "You do not have access to this.");
+            }
+        }
+        if (r.status == RescueStatus.CANCELLED) {
+            return toView(r, catchers.findById(r.catcherId).orElse(null));
+        }
+        if (r.status != RescueStatus.REQUESTED) {
+            throw ApiException.conflict("INVALID_STATE", "This rescue request can no longer be cancelled.");
+        }
+        r.status = RescueStatus.CANCELLED;
+        r.updatedAt = clock.instant();
+        rescues.save(r);
         return toView(r, catchers.findById(r.catcherId).orElse(null));
     }
 

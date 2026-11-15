@@ -17,6 +17,8 @@ public class Rescue {
     @Column(length = 36)
     public String id;
 
+    public Long userId;
+
     @Column(nullable = false)
     public Long catcherId;
 

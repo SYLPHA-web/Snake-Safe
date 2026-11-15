@@ -55,7 +55,11 @@ export default async function catcher(el, ctx) {
     if (!p) { showErr(t('err.INVALID_PHONE')); return; }
     btn.disabled = true;
     try {
-      const r = await api('/api/rescues', { method: 'POST', body: { catcherId: c.id, lat: loc.lat, lng: loc.lng, notes: $('#notes', el).value.trim() || undefined, phone: p } });
+      const r = await api('/api/rescues', {
+        method: 'POST',
+        body: { catcherId: c.id, lat: loc.lat, lng: loc.lng, notes: $('#notes', el).value.trim() || undefined, phone: p },
+        auth: tokens.get('user') ? 'user' : undefined
+      });
       ctx.navigate(`/rescues/${r.id}`);
     } catch (ex) { showErr(errorText(ex)); btn.disabled = false; }
   });

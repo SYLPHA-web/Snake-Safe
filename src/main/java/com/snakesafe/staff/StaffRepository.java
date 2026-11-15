@@ -10,4 +10,6 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     Optional<Staff> findByUsernameIgnoreCase(String username);
 
     List<Staff> findAllByOrderByUsernameAsc();
+
+    List<Staff> findByRoleOrderByUsernameAsc(com.snakesafe.auth.Role role);
 }

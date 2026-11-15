@@ -4,7 +4,7 @@ export class ApiError extends Error {
   constructor(code, message, status) { super(message); this.code = code; this.status = status; }
 }
 
-const KEYS = { user: 'ss-token', staff: 'ss-staff-token', admin: 'ss-admin-token' };
+const KEYS = { user: 'ss-token', staff: 'ss-staff-token', admin: 'ss-admin-token', catcher: 'ss-catcher-token' };
 export const tokens = {
   get: (kind) => store.get(KEYS[kind]),
   set: (kind, v) => store.set(KEYS[kind], v),

@@ -118,6 +118,14 @@ public class AdminContentController {
     @PostMapping("/catchers")
     @ResponseStatus(HttpStatus.CREATED)
     public CatcherAdminView createCatcher(@Valid @RequestBody CatcherRequest req) {
+        boolean willBeActive = req.active() == null || req.active();
+        if (willBeActive) {
+            String phone = Phones.normalize(req.phone());
+            if (catchers.existsByPhoneAndActiveTrue(phone)) {
+                throw ApiException.conflict("PHONE_TAKEN",
+                        "An active snake catcher is already registered with this phone number.");
+            }
+        }
         return toView(catchers.save(fill(new Catcher(), req)));
     }
 
@@ -125,6 +133,14 @@ public class AdminContentController {
     public CatcherAdminView updateCatcher(@PathVariable long id, @Valid @RequestBody CatcherRequest req) {
         Catcher c = catchers.findById(id)
                 .orElseThrow(() -> ApiException.notFound("CATCHER_NOT_FOUND", "Snake catcher not found."));
+        boolean willBeActive = req.active() == null || req.active();
+        if (willBeActive) {
+            String phone = Phones.normalize(req.phone());
+            if (catchers.existsByPhoneAndActiveTrueAndIdNot(phone, id)) {
+                throw ApiException.conflict("PHONE_TAKEN",
+                        "An active snake catcher is already registered with this phone number.");
+            }
+        }
         return toView(catchers.save(fill(c, req)));
     }
 

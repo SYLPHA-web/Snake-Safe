@@ -135,6 +135,7 @@ function footerHtml() {
         <div class="foot-links">
           <a href="#/first-aid">${t('nav.firstAid')}</a><a href="#/hospitals">${t('nav.hospitals')}</a><a href="#/snakes">${t('nav.snakes')}</a>
           <a href="#/catchers">${t('nav.catchers')}</a><a href="#/identify">${t('nav.identify')}</a><a href="#/staff">${t('foot.staff')}</a>
+          <a href="#/catcher">${t('foot.catcherPortal')}</a>
           <button class="btn-link ${installEvent ? '' : 'hidden'}" data-install type="button">${toHtml(icon('download', 15))} ${t('foot.install')}</button>
         </div>
       </div>

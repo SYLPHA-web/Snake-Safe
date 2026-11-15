@@ -17,12 +17,17 @@ const RING_LEN = 2 * Math.PI * 44;
 
 export default async function emergency(el, ctx) {
   const cfg = ctx.config;
+  const isUser = !!tokens.get('user');
   const S = {
     step: 'who',
     who: { type: 'SELF', name: '', age: '' },
     loc: null, best: null, hospital: null, others: [], all: [], alert: null, aid: null,
     presetId: ctx.query.get('hospital'), showOthers: false, errMsg: '', locErr: '',
     cdEnd: 0, cdTotal: cfg.cancelWindowSeconds, sending: false,
+    members: null,
+    membersLoading: isUser,
+    selectedId: 'SELF',
+    userProfile: null,
   };
   let ws = null; let poll = null; let tick = null;
 
@@ -40,6 +45,29 @@ export default async function emergency(el, ctx) {
   document.addEventListener('click', onExit, true);
 
   api('/api/first-aid').then((d) => { S.aid = d; if (['best', 'confirmed', 'waiting'].includes(S.step)) draw(false); }).catch(() => {});
+
+  if (isUser) {
+    Promise.all([
+      api('/api/profile/members', { auth: 'user' }),
+      api('/api/profile', { auth: 'user' }).catch(() => null),
+    ]).then(([mList, prof]) => {
+      if (!ctx.alive()) return;
+      S.members = Array.isArray(mList) ? mList : [];
+      S.membersLoading = false;
+      S.userProfile = prof;
+      if (S.step === 'who') {
+        if (S.selectedId === 'SELF' && prof?.name && !S.who.name) {
+          S.who.name = prof.name;
+        }
+        draw(false);
+      }
+    }).catch(() => {
+      if (!ctx.alive()) return;
+      S.members = [];
+      S.membersLoading = false;
+      if (S.step === 'who') draw(false);
+    });
+  }
 
   // ------------------------------------------------------------ data steps
   async function locate() {
@@ -133,19 +161,63 @@ export default async function emergency(el, ctx) {
   }
 
   function viewWho() {
+    const hasMembers = isUser && S.members && S.members.length > 0;
+    const selectedMember = hasMembers && typeof S.selectedId === 'number'
+      ? S.members.find((m) => m.id === S.selectedId)
+      : null;
+
+    let optionsHtml = '';
+    if (isUser && hasMembers) {
+      optionsHtml = html`
+        <div class="who-grid" data-stagger>
+          <button class="who-opt ${S.selectedId === 'SELF' ? 'on' : ''}" data-act="pick-self" aria-pressed="${String(S.selectedId === 'SELF')}">
+            <span class="ico">${icon('user', 28)}</span>
+            <span>${t('flow.myself')}<br><small>${S.userProfile?.name || t('flow.selfSub')}</small></span>
+          </button>
+          ${S.members.map((m) => html`
+            <button class="who-opt ${S.selectedId === m.id ? 'on' : ''}" data-act="pick-member" data-id="${m.id}" aria-pressed="${String(S.selectedId === m.id)}">
+              <span class="ico">${icon(m.age != null && m.age < 12 ? 'child' : 'user', 28)}</span>
+              <span>${m.name}<br><small>${[m.relation, m.age != null ? t('profile.years', { n: m.age }) : ''].filter(Boolean).join(' · ') || t('profile.family')}</small></span>
+            </button>`)}
+          <button class="who-opt ${S.selectedId === 'OTHER' ? 'on' : ''}" data-act="pick-other" aria-pressed="${String(S.selectedId === 'OTHER')}">
+            <span class="ico">${icon('users', 28)}</span>
+            <span>${t('flow.manualEntry')}<br><small>${t('flow.manualSub')}</small></span>
+          </button>
+        </div>`;
+    } else {
+      optionsHtml = html`
+        <div class="who-grid" data-stagger>
+          ${[['SELF', 'user', 'flow.self', 'flow.selfSub'], ['OTHER', 'users', 'flow.other', 'flow.otherSub'], ['CHILD', 'child', 'flow.child', 'flow.childSub']].map(([v, ic, k, sk]) => html`
+            <button class="who-opt ${S.who.type === v && (S.selectedId === v || !S.selectedId) ? 'on' : ''}" data-act="who" data-v="${v}" aria-pressed="${String(S.who.type === v)}">
+              <span class="ico">${icon(ic, 28)}</span>
+              <span>${t(k)}<br><small>${v === 'SELF' && S.userProfile?.name ? S.userProfile.name : t(sk)}</small></span>
+            </button>`)}
+        </div>
+        ${isUser && S.membersLoading ? html`
+          <p class="muted small row" style="gap:8px;margin-top:14px;align-items:center;justify-content:center">
+            <span class="pulse">${icon('clock', 14)}</span> ${t('flow.loadingFamily')}
+          </p>` : ''}
+        ${isUser && !S.membersLoading && S.members && S.members.length === 0 ? html`
+          <p class="muted small center" style="margin-top:12px">${t('flow.noFamilySaved')}</p>` : ''}`;
+    }
+
     return html`<div class="flow-wrap">
       <div data-reveal><span class="chip chip-red">${icon('sos', 13)} ${t('flow.chip')}</span>
         <h1 class="flow-title" style="margin-top:12px">${t('flow.whoTitle')}</h1><p class="muted" style="margin-top:6px">${t('flow.whoSub')}</p></div>
-      <div class="who-grid" data-stagger>
-        ${[['SELF', 'user', 'flow.self', 'flow.selfSub'], ['OTHER', 'users', 'flow.other', 'flow.otherSub'], ['CHILD', 'child', 'flow.child', 'flow.childSub']].map(([v, ic, k, sk]) => html`
-          <button class="who-opt ${S.who.type === v ? 'on' : ''}" data-act="who" data-v="${v}" aria-pressed="${String(S.who.type === v)}"><span class="ico">${icon(ic, 28)}</span><span>${t(k)}<br><small>${t(sk)}</small></span></button>`)}
-      </div>
+      ${optionsHtml}
       <div class="card" style="margin-top:18px" data-reveal>
-        <div class="eyebrow" style="margin-bottom:10px">${t('flow.details')}</div>
+        <div class="row between" style="margin-bottom:10px">
+          <div class="eyebrow">${t('flow.details')}</div>
+          ${selectedMember ? html`<span class="chip chip-soft xs">${icon('shield', 12)} ${t('flow.selectedFamily')}</span>` : ''}
+        </div>
         <div class="grid-2" style="gap:14px">
           <div class="field"><label for="pname">${t('flow.name')}</label><input class="input" id="pname" maxlength="100" value="${S.who.name}" autocomplete="off"></div>
           <div class="field"><label for="page">${t('flow.age')}</label><input class="input" id="page" type="number" min="0" max="120" inputmode="numeric" value="${S.who.age}"></div>
         </div>
+        ${selectedMember?.allergies ? html`
+          <div class="card-flat" style="margin-top:12px;display:flex;gap:8px;align-items:center;font-size:13px;padding:8px 12px">
+            ${icon('warn', 16)} <span>${t('profile.allergies')}: <b>${selectedMember.allergies}</b></span>
+          </div>` : ''}
       </div>
       <div class="stack" style="margin-top:20px" data-reveal>
         <button class="btn btn-red btn-lg btn-block" data-act="go">${t('flow.findHospital')} ${icon('arrow', 18)}</button>
@@ -297,16 +369,52 @@ export default async function emergency(el, ctx) {
   tick = setInterval(drawLive, 250);
 
   // ------------------------------------------------------------ events
+  el.addEventListener('input', (e) => {
+    if (e.target.id === 'pname') S.who.name = e.target.value;
+    if (e.target.id === 'page') S.who.age = e.target.value;
+  });
+
   el.addEventListener('click', async (e) => {
     const b = e.target.closest('[data-act]');
     if (!b) return;
     const act0 = b.dataset.act;
     if (act0 === 'who') {
+      S.selectedId = b.dataset.v;
       S.who.type = b.dataset.v;
+      if (b.dataset.v === 'SELF' && S.userProfile?.name && !S.who.name) {
+        S.who.name = S.userProfile.name;
+        const pn = $('#pname', el); if (pn) pn.value = S.who.name;
+      }
       el.querySelectorAll('.who-opt').forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+    } else if (act0 === 'pick-self') {
+      S.selectedId = 'SELF';
+      S.who.type = 'SELF';
+      S.who.name = S.userProfile?.name || '';
+      S.who.age = '';
+      draw(false);
+    } else if (act0 === 'pick-member') {
+      const id = +b.dataset.id;
+      const m = S.members?.find((x) => x.id === id);
+      if (m) {
+        S.selectedId = m.id;
+        S.who.name = m.name || '';
+        S.who.age = m.age != null ? String(m.age) : '';
+        S.who.type = (m.age != null && m.age < 12) ? 'CHILD' : 'OTHER';
+        draw(false);
+      }
+    } else if (act0 === 'pick-other') {
+      S.selectedId = 'OTHER';
+      S.who.type = 'OTHER';
+      S.who.name = '';
+      S.who.age = '';
+      draw(false);
+      $('#pname', el)?.focus();
     } else if (act0 === 'go') {
       S.who.name = ($('#pname', el)?.value || '').trim(); S.who.age = ($('#page', el)?.value || '').trim();
       if (S.who.age !== '' && (Number.isNaN(+S.who.age) || +S.who.age < 0 || +S.who.age > 120)) { toast(t('flow.ageBad'), 'err'); return; }
+      if (S.who.type !== 'SELF' && S.who.age !== '') {
+        S.who.type = +S.who.age < 12 ? 'CHILD' : 'OTHER';
+      }
       locate();
     } else if (act0 === 'retryLoc') locate();
     else if (act0 === 'others') { S.showOthers = !S.showOthers; draw(false); }
@@ -320,7 +428,13 @@ export default async function emergency(el, ctx) {
     else if (act0 === 'cancel') act('cancel');
     else if (act0 === 'cancelWait') { if (await confirmDialog(t('flow.cancelAlert'), t('flow.cancelAsk'), t('flow.cancelYes'))) act('cancel'); }
     else if (act0 === 'arrived') act('arrived');
-    else if (act0 === 'restart') { S.alert = null; S.hospital = null; S.step = 'who'; history.replaceState(null, '', '#/emergency'); draw(); }
+    else if (act0 === 'restart') {
+      S.alert = null; S.hospital = null; S.step = 'who';
+      S.selectedId = 'SELF';
+      S.who = { type: 'SELF', name: S.userProfile?.name || '', age: '' };
+      history.replaceState(null, '', '#/emergency');
+      draw();
+    }
   });
 
   // ------------------------------------------------------------ start

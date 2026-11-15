@@ -6,7 +6,7 @@ const SHELL = [
   '/', '/index.html', '/css/app.css', '/img/logo.svg', '/icons/icon-192.png', '/icons/icon-512.png',
   '/vendor/gsap.min.js', '/vendor/ScrollTrigger.min.js', '/fonts/plus-jakarta-sans.woff2', '/fonts/noto-sans-kannada.woff2',
   '/js/theme.js', '/js/app.js', '/js/util.js', '/js/icons.js', '/js/api.js', '/js/geo.js', '/js/motion.js', '/js/ui.js', '/js/nav.js', '/js/i18n.js', '/js/chat.js',
-  ...['home', 'hospitals', 'hospital', 'snakes', 'snake', 'firstaid', 'catchers', 'catcher', 'rescue', 'identify', 'emergency', 'login', 'profile', 'staff', 'admin', 'notfound'].map((p) => `/js/pages/${p}.js`),
+  ...['home', 'hospitals', 'hospital', 'snakes', 'snake', 'firstaid', 'catchers', 'catcher', 'rescue', 'identify', 'emergency', 'login', 'profile', 'staff', 'catcherportal', 'admin', 'notfound'].map((p) => `/js/pages/${p}.js`),
 ];
 const OFFLINE_DATA = [/^\/api\/config$/, /^\/api\/first-aid$/, /^\/api\/snakes(\/\d+)?$/];
 

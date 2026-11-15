@@ -32,11 +32,15 @@ import com.snakesafe.catcher.Rescue;
 import com.snakesafe.catcher.RescueRepository;
 import com.snakesafe.catcher.RescueStatus;
 import com.snakesafe.config.Sanitizer;
+import com.snakesafe.hospital.AntivenomStock;
 import com.snakesafe.hospital.Hospital;
 import com.snakesafe.hospital.HospitalRepository;
 import com.snakesafe.hospital.HospitalService;
 import com.snakesafe.hospital.HospitalView;
+import com.snakesafe.hospital.StockInfo;
 import com.snakesafe.hospital.StockRepository;
+import com.snakesafe.hospital.StockStatus;
+import com.snakesafe.identify.SnakePhotoRepository;
 import com.snakesafe.staff.Staff;
 import com.snakesafe.staff.StaffAuthService;
 import com.snakesafe.staff.StaffRepository;
@@ -71,6 +75,14 @@ public class AdminController {
             @Min(0) Integer vials, Boolean active) {
     }
 
+    public record HospitalAdminView(Long id, String name, String district, String address, String phone,
+            double lat, double lng, StockInfo stock, boolean active) {
+    }
+
+    public record AdminStatsView(long totalHospitals, long activeHospitals, long verifiedVials,
+            long waitingAlerts, long activeRescues, long activeCatchers, long unverifiedPhotos) {
+    }
+
     public record StaffRequest(@NotBlank @Size(min = 3, max = 60) String username,
             @Size(min = 8, max = 100) String password, @NotBlank @Size(max = 100) String name,
             @NotNull Long hospitalId, Boolean active) {
@@ -96,12 +108,14 @@ public class AdminController {
     private final AlertRepository alertRepo;
     private final RescueRepository rescueRepo;
     private final CatcherRepository catcherRepo;
+    private final SnakePhotoRepository photoRepo;
     private final PasswordEncoder encoder;
     private final Clock clock;
 
     public AdminController(StaffAuthService auth, JwtService jwt, HospitalRepository hospitalRepo,
             HospitalService hospitals, StockRepository stocks, StaffRepository staffRepo, AlertRepository alertRepo,
-            RescueRepository rescueRepo, CatcherRepository catcherRepo, PasswordEncoder encoder, Clock clock) {
+            RescueRepository rescueRepo, CatcherRepository catcherRepo, SnakePhotoRepository photoRepo,
+            PasswordEncoder encoder, Clock clock) {
         this.auth = auth;
         this.jwt = jwt;
         this.hospitalRepo = hospitalRepo;
@@ -111,6 +125,7 @@ public class AdminController {
         this.alertRepo = alertRepo;
         this.rescueRepo = rescueRepo;
         this.catcherRepo = catcherRepo;
+        this.photoRepo = photoRepo;
         this.encoder = encoder;
         this.clock = clock;
     }
@@ -121,36 +136,67 @@ public class AdminController {
         return new LoginResponse(login.token(), jwt.expiresInHours(), login.staff().name);
     }
 
+    // ---- stats ----
+
+    @GetMapping("/stats")
+    @Transactional(readOnly = true)
+    public AdminStatsView stats() {
+        long totalHospitals = hospitalRepo.count();
+        long activeHospitals = hospitalRepo.countByActiveTrue();
+        long verifiedVials = hospitalRepo.findAll().stream()
+                .filter(h -> h.active)
+                .map(h -> stocks.findByHospitalId(h.id).orElse(null))
+                .filter(s -> s != null && hospitals.stockInfo(s).status() == StockStatus.VERIFIED)
+                .mapToLong(s -> s.vials)
+                .sum();
+        long waitingAlerts = alertRepo.countByStatus(AlertStatus.WAITING);
+        long activeRescues = rescueRepo.countByStatusIn(List.of(RescueStatus.REQUESTED, RescueStatus.ACCEPTED));
+        long activeCatchers = catcherRepo.countByActiveTrue();
+        long unverifiedPhotos = photoRepo.countByVerifiedByIsNull();
+        return new AdminStatsView(totalHospitals, activeHospitals, verifiedVials, waitingAlerts, activeRescues,
+                activeCatchers, unverifiedPhotos);
+    }
+
     // ---- hospitals ----
 
     @GetMapping("/hospitals")
     @Transactional(readOnly = true)
-    public List<HospitalView> listHospitals() {
-        return hospitalRepo.findAll().stream().map(h -> hospitals.viewOf(h.id, null, null))
+    public List<HospitalAdminView> listHospitals() {
+        Map<Long, AntivenomStock> stockByHospital = stocks.findAll().stream()
+                .collect(Collectors.toMap(s -> s.hospitalId, Function.identity(), (a, b) -> a));
+        return hospitalRepo.findAll().stream()
+                .map(h -> new HospitalAdminView(h.id, h.name, h.district, h.address, h.phone, h.lat, h.lng,
+                        hospitals.stockInfo(stockByHospital.get(h.id)), h.active))
                 .sorted((a, b) -> a.name().compareToIgnoreCase(b.name())).toList();
     }
 
     @PostMapping("/hospitals")
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public HospitalView createHospital(@Valid @RequestBody HospitalRequest req) {
+    public HospitalAdminView createHospital(@Valid @RequestBody HospitalRequest req) {
         Hospital h = hospitalRepo.save(fill(new Hospital(), req));
+        StockInfo stock = null;
         if (req.vials() != null) {
-            hospitals.updateStock(h.id, req.vials());
+            stock = hospitals.updateStock(h.id, req.vials());
+        } else {
+            stock = hospitals.stockInfo(stocks.findByHospitalId(h.id).orElse(null));
         }
-        return hospitals.viewOf(h.id, null, null);
+        return new HospitalAdminView(h.id, h.name, h.district, h.address, h.phone, h.lat, h.lng, stock, h.active);
     }
 
     @PutMapping("/hospitals/{id}")
     @Transactional
-    public HospitalView updateHospital(@PathVariable long id, @Valid @RequestBody HospitalRequest req) {
+    public HospitalAdminView updateHospital(@PathVariable long id, @Valid @RequestBody HospitalRequest req) {
         Hospital h = hospitalRepo.findById(id)
                 .orElseThrow(() -> ApiException.notFound("HOSPITAL_NOT_FOUND", "Hospital not found."));
         hospitalRepo.save(fill(h, req));
+        StockInfo stock = null;
         if (req.vials() != null) {
-            hospitals.updateStock(h.id, req.vials());
+            stock = hospitals.updateStock(h.id, req.vials());
+        } else {
+            stock = hospitals.stockInfo(stocks.findByHospitalId(h.id).orElse(null));
         }
-        return hospitals.viewOf(h.id, null, null);
+        return new HospitalAdminView(h.id, h.name, h.district, h.address, h.phone, h.lat, h.lng, stock, h.active);
     }
 
     /** Hospitals are hidden, not erased, so old alerts keep their history. */
@@ -167,7 +213,7 @@ public class AdminController {
 
     @GetMapping("/staff")
     public List<StaffView> listStaff() {
-        return staffRepo.findAllByOrderByUsernameAsc().stream().map(AdminController::toView).toList();
+        return staffRepo.findByRoleOrderByUsernameAsc(Role.STAFF).stream().map(AdminController::toView).toList();
     }
 
     @PostMapping("/staff")
@@ -267,7 +313,11 @@ public class AdminController {
         h.phone = r.phone().strip();
         h.lat = r.lat();
         h.lng = r.lng();
-        h.active = r.active() == null || r.active();
+        if (r.active() != null) {
+            h.active = r.active();
+        } else if (h.id == null) {
+            h.active = true;
+        }
         return h;
     }
 

@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/staff/login").permitAll()
                         .requestMatchers("/api/staff/**").hasRole("STAFF")
+                        .requestMatchers("/api/catcher/login/**").permitAll()
+                        .requestMatchers("/api/catcher/**").hasRole("CATCHER")
                         // everything else (emergency flow, info pages, auth) is open so help is never blocked
                         .anyRequest().permitAll())
                 .exceptionHandling(e -> e

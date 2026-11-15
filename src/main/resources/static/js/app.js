@@ -22,6 +22,7 @@ const ROUTES = [
   [/^\/login$/, 'login'],
   [/^\/profile$/, 'profile'],
   [/^\/staff$/, 'staff'],
+  [/^\/catcher$/, 'catcherportal'],
   [/^\/admin$/, 'admin'],
 ];
 

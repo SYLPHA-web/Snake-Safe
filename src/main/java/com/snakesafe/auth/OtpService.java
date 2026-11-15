@@ -79,8 +79,8 @@ public class OtpService {
         return new SendResult(true, (int) CODE_LIFETIME.toSeconds(), props.otpMode());
     }
 
-    /** Not transactional on purpose: a wrong guess must still be counted when the error is thrown. */
-    public LoginResult verify(String rawPhone, String code) {
+    /** Verifies and consumes the OTP without creating or loading a Role.USER account. */
+    public void verifyCodeOnly(String rawPhone, String code) {
         String phone = Phones.normalize(rawPhone);
         OtpCode entry = codes.findFirstByPhoneAndUsedFalseOrderByCreatedAtDesc(phone)
                 .orElseThrow(() -> ApiException.badRequest("INVALID_CODE", "That code is not right. Ask for a new code."));
@@ -101,6 +101,12 @@ public class OtpService {
 
         entry.used = true;
         codes.save(entry);
+    }
+
+    /** Not transactional on purpose: a wrong guess must still be counted when the error is thrown. */
+    public LoginResult verify(String rawPhone, String code) {
+        verifyCodeOnly(rawPhone, code);
+        String phone = Phones.normalize(rawPhone);
         User user = users.findByPhone(phone).orElseGet(() -> createUser(phone));
         return new LoginResult(jwt.issue(user.id, Role.USER), user, jwt.expiresInHours());
     }

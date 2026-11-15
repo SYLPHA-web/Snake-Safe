@@ -10,15 +10,22 @@ export const title = 'admin.title';
 
 const A = { auth: 'admin' };
 const time = (v) => (v ? hhmm(v) : '–');
+const stockStatusText = (st) => t(`stock.status.${st}`) || t(`stock.legend${st ? st.charAt(0) + st.slice(1).toLowerCase() : ''}`) || st;
 const importButton = () => html`<button class="btn btn-sm btn-soft" data-act="import">${icon('upload', 15)} ${t('admin.import')}</button><input type="file" accept=".csv,text/csv" class="sr-only" data-import tabindex="-1" aria-hidden="true">`;
 
 // Each tab says how to list, which columns to show and how to create / edit / remove rows.
 const TABS = {
   hospitals: {
     list: '/api/admin/hospitals', create: '/api/admin/hospitals', update: (r) => `/api/admin/hospitals/${r.id}`, remove: (r) => `/api/admin/hospitals/${r.id}`, removeLabel: 'admin.hide',
-    cols: [['name', (r) => r.name], ['district', (r) => r.district], ['phone', (r) => r.phone], ['vials', (r) => `${r.stock.vials} · ${r.stock.status}`]],
+    cols: [
+      ['name', (r) => r.name],
+      ['district', (r) => r.district],
+      ['phone', (r) => r.phone],
+      ['vials', (r) => `${r.stock.vials} · ${stockStatusText(r.stock.status)}`],
+      ['active', (r) => (r.active ? t('admin.active') : t('admin.inactive'))],
+    ],
     fields: [['name', 'text', 1], ['district', 'text', 1], ['address', 'text', 1], ['phone', 'text', 1], ['lat', 'number', 1], ['lng', 'number', 1], ['vials', 'number'], ['active', 'checkbox']],
-    values: (r) => ({ ...r, vials: r.stock.vials, active: true }),
+    values: (r) => ({ ...r, vials: r.stock.vials, active: r.active !== false }),
     toolbar: () => importButton(),
   },
   staff: {
@@ -42,12 +49,25 @@ const TABS = {
   },
   alerts: {
     list: '/api/admin/alerts',
-    cols: [['status', (r) => r.status], ['patientType', (r) => r.patientType], ['hospital', (r) => r.hospitalName], ['created', (r) => time(r.createdAt)], ['sent', (r) => time(r.sentAt)], ['confirmed', (r) => time(r.confirmedAt)], ['arrived', (r) => time(r.arrivedAt)]],
+    cols: [
+      ['status', (r) => t('staff.st.' + r.status) || r.status],
+      ['patientType', (r) => r.patientType],
+      ['hospital', (r) => r.hospitalName],
+      ['created', (r) => time(r.createdAt)],
+      ['sent', (r) => time(r.sentAt)],
+      ['confirmed', (r) => time(r.confirmedAt)],
+      ['arrived', (r) => time(r.arrivedAt)],
+    ],
   },
   rescues: {
     list: '/api/admin/rescues',
-    cols: [['catcher', (r) => r.catcherName], ['notes', (r) => r.notes || '–'], ['created', (r) => time(r.createdAt)], ['status', (r) => r.status]],
-    rowExtra: (r) => html`<select class="select select-pill" data-rescue="${r.id}">${['REQUESTED', 'ACCEPTED', 'DONE'].map((s) => html`<option ${s === r.status ? 'selected' : ''}>${s}</option>`)}</select>`,
+    cols: [
+      ['catcher', (r) => r.catcherName],
+      ['notes', (r) => r.notes || '–'],
+      ['created', (r) => time(r.createdAt)],
+      ['status', (r) => t('rescue.' + r.status + '.short') || t('rescue.' + r.status) || r.status],
+    ],
+    rowExtra: (r) => html`<select class="select select-pill" data-rescue="${r.id}">${['REQUESTED', 'ACCEPTED', 'DONE', 'DECLINED', 'CANCELLED'].map((s) => html`<option value="${s}" ${s === r.status ? 'selected' : ''}>${t('rescue.' + s + '.short') || t('rescue.' + s) || s}</option>`)}</select>`,
   },
   photos: {
     list: '/api/admin/snake-photos',
@@ -57,15 +77,43 @@ const TABS = {
   },
 };
 
+function kpiCards(stats) {
+  if (!stats) return '';
+  const items = [
+    { tab: 'hospitals', val: html`${stats.activeHospitals} <span class="muted" style="font-size:13px;font-weight:500">/ ${stats.totalHospitals}</span>`, lbl: t('admin.stats.hospitals'), ico: 'hospital' },
+    { tab: 'hospitals', val: html`${stats.verifiedVials}`, lbl: t('admin.stats.vials'), ico: 'drop' },
+    { tab: 'alerts', val: html`${stats.waitingAlerts}`, lbl: t('admin.stats.alerts'), ico: 'bell', highlight: stats.waitingAlerts > 0 },
+    { tab: 'rescues', val: html`${stats.activeRescues}`, lbl: t('admin.stats.rescues'), ico: 'shieldUser' },
+    { tab: 'catchers', val: html`${stats.activeCatchers}`, lbl: t('admin.stats.catchers'), ico: 'users' },
+    { tab: 'photos', val: html`${stats.unverifiedPhotos}`, lbl: t('admin.stats.photos'), ico: 'camera' },
+  ];
+  return html`
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">
+      ${items.map((it) => html`
+        <div class="card" data-tab="${it.tab}" role="button" tabindex="0" style="padding:14px 16px;cursor:pointer;display:flex;flex-direction:column;gap:6px">
+          <div class="row between" style="color:var(--muted);font-size:12px;font-weight:600">
+            <span>${it.lbl}</span>
+            ${icon(it.ico, 16)}
+          </div>
+          <div style="font-size:22px;font-weight:800;color:${it.highlight ? 'var(--red)' : 'var(--ink)'}">
+            ${it.val}
+          </div>
+        </div>`)}
+    </div>`;
+}
+
 export default async function admin(el, ctx) {
   if (!tokens.get('admin')) return loginView(el, ctx);
-  const S = { tab: 'hospitals', rows: [], hosp: {} };
+  const S = { tab: 'hospitals', rows: [], hosp: {}, stats: null };
   ctx.onLang = () => draw();
 
   async function load() {
     try {
+      const statsP = api('/api/admin/stats', A).catch(() => null);
       if (S.tab === 'staff') { const hs = await api('/api/admin/hospitals', A); S.hosp = Object.fromEntries(hs.map((h) => [h.id, h.name])); S.hospList = hs; }
-      S.rows = await api(TABS[S.tab].list, A);
+      const [rows, stats] = await Promise.all([api(TABS[S.tab].list, A), statsP]);
+      S.rows = rows;
+      if (stats) S.stats = stats;
     } catch (e) { if (e.status === 401) { ctx.rerender(); return; } toast(errorText(e), 'err'); S.rows = []; }
     draw();
   }
@@ -78,6 +126,7 @@ export default async function admin(el, ctx) {
         <div class="top-actions">${themeSwitch()}<button class="lang-toggle" data-lang-toggle type="button"><span class="${t('lang.code') === 'en' ? 'on' : ''}">EN</span><span class="${t('lang.code') === 'kn' ? 'on' : ''}">ಕನ್ನಡ</span></button>
           <button class="btn btn-soft btn-sm" data-act="logout">${icon('logout', 15)} ${t('staff.logout')}</button></div></div></header>
       <div class="container page" style="padding-bottom:50px">
+        ${kpiCards(S.stats)}
         <div class="tabs" role="tablist">${Object.keys(TABS).map((k) => html`<button class="btn btn-sm ${k === S.tab ? '' : 'btn-soft'}" role="tab" aria-selected="${String(k === S.tab)}" data-tab="${k}">${t(`admin.tab.${k}`)}</button>`)}</div>
         <div class="row between" style="margin:18px 0 12px;flex-wrap:wrap"><h2 style="font-size:22px">${t(`admin.tab.${S.tab}`)} <span class="muted small">(${S.rows.length})</span></h2>
           <div class="row-wrap">${cfg.toolbar ? cfg.toolbar() : ''}${cfg.create ? html`<button class="btn btn-sm" data-act="add">${icon('plus', 15)} ${t('common.add')}</button>` : ''}</div></div>

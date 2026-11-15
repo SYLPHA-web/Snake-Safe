@@ -16,4 +16,6 @@ public interface AlertRepository extends JpaRepository<Alert, String> {
     List<Alert> findTop200ByOrderByCreatedAtDesc();
 
     long countByHospitalIdAndStatus(Long hospitalId, AlertStatus status);
+
+    long countByStatus(AlertStatus status);
 }

@@ -34,12 +34,18 @@ public class IdentifyController {
         this.props = props;
     }
 
-    /** Multipart: file (jpg/png, max 5 MB). Add keep=true only if the user agrees to share the photo for training. */
+    public IdentifyService.Result identify(MultipartFile file, boolean keep, HttpServletRequest http) {
+        return identify(file, keep, false, http);
+    }
+
+    /** Multipart: file (jpg/png, max 5 MB). Add keep=true AND consent=true only if the user agrees to share the photo for training. */
     @PostMapping(value = "/api/identify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public IdentifyService.Result identify(@RequestParam("file") MultipartFile file,
-            @RequestParam(defaultValue = "false") boolean keep, HttpServletRequest http) {
+            @RequestParam(defaultValue = "false") boolean keep,
+            @RequestParam(defaultValue = "false") boolean consent, HttpServletRequest http) {
         limiter.check("identify:" + http.getRemoteAddr(), props.limits().identifyPerMinute(), Duration.ofMinutes(1));
-        return identify.identify(file, keep);
+        boolean shouldRetain = keep && consent;
+        return identify.identify(file, shouldRetain);
     }
 
     /** Training data: multipart file + species + source, and consent must be true. */

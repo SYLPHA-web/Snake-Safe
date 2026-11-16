@@ -54,7 +54,10 @@ public class IdentifyService {
         boolean kept = false;
         if (keep && !guesses.isEmpty()) {
             Guess top = guesses.get(0);
-            photos.store(image, top.nameEn() != null ? top.nameEn() : top.scientificName(), "identify", true);
+            String species = top.nameEn() != null && !top.nameEn().isBlank()
+                    ? top.nameEn()
+                    : (top.scientificName() != null && !top.scientificName().isBlank() ? top.scientificName() : "Unidentified");
+            photos.store(image, species, "identify", true);
             kept = true;
         }
         return new Result(guesses, overall(guesses), DISCLAIMER, "Call " + props.emergencyNumber(),

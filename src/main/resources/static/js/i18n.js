@@ -131,6 +131,9 @@ const en = {
   'id.disclaimer': 'This may be wrong.', 'id.unreadable': 'We could not read that photo.', 'id.safetyTitle': 'Stay safe',
   'id.safe1': 'Stop moving and step back slowly.', 'id.safe2': 'Keep children and pets away.', 'id.safe3': 'Do not touch, trap or throw things at the snake.', 'id.safe4': 'Stay where you can see it and call a snake catcher.',
   'id.commonTitle': 'Common snakes', 'id.browse': 'Browse all snakes', 'id.v.YES': 'Venomous', 'id.v.NO': 'Not venomous', 'id.v.UNSURE': 'Not sure',
+  'id.consentLabel': 'Share this photo to help improve the Karnataka snake identification model (optional)',
+  'id.consentSub': 'Participation is optional. If you check this box, your uploaded photo will be stored to train and improve the Karnataka snake identification model. The photo is not stored unless you explicitly opt in.',
+  'id.offlineWarning': 'Offline — Internet connection required to identify a snake.',
 
   'login.title': 'Sign in', 'login.sub': 'Sign in with your phone number to save family details and contacts.', 'login.phone': 'Phone number', 'login.send': 'Send code',
   'login.guest': 'You do not need to sign in to ask for emergency help.', 'login.codeTitle': 'Enter your code', 'login.codeSub': 'We sent a 6-digit code to {phone}.',
@@ -316,6 +319,9 @@ const kn = {
   'id.disclaimer': 'ಇದು ತಪ್ಪಾಗಿರಬಹುದು.', 'id.unreadable': 'ಆ ಫೋಟೋ ಓದಲಾಗಲಿಲ್ಲ.', 'id.safetyTitle': 'ಸುರಕ್ಷಿತವಾಗಿರಿ',
   'id.safe1': 'ಚಲನೆ ನಿಲ್ಲಿಸಿ, ನಿಧಾನವಾಗಿ ಹಿಂದೆ ಸರಿಯಿರಿ.', 'id.safe2': 'ಮಕ್ಕಳು ಮತ್ತು ಸಾಕುಪ್ರಾಣಿಗಳನ್ನು ದೂರವಿಡಿ.', 'id.safe3': 'ಹಾವನ್ನು ಮುಟ್ಟಬೇಡಿ, ಸಿಕ್ಕಿಸಬೇಡಿ, ಅದರ ಮೇಲೆ ವಸ್ತು ಎಸೆಯಬೇಡಿ.', 'id.safe4': 'ಅದು ಕಾಣುವ ಜಾಗದಲ್ಲಿರಿ ಮತ್ತು ಹಾವು ಹಿಡಿಯುವವರಿಗೆ ಕರೆ ಮಾಡಿ.',
   'id.commonTitle': 'ಸಾಮಾನ್ಯ ಹಾವುಗಳು', 'id.browse': 'ಎಲ್ಲಾ ಹಾವುಗಳನ್ನು ನೋಡಿ', 'id.v.YES': 'ವಿಷಕಾರಿ', 'id.v.NO': 'ವಿಷರಹಿತ', 'id.v.UNSURE': 'ಖಚಿತವಿಲ್ಲ',
+  'id.consentLabel': 'ಕರ್ನಾಟಕ ಹಾವು ಗುರುತಿಸುವಿಕೆ ಮಾದರಿಯನ್ನು ಸುಧಾರಿಸಲು ಈ ಫೋಟೋ ಹಂಚಿಕೊಳ್ಳಿ (ಐಚ್ಛಿಕ)',
+  'id.consentSub': 'ಭಾಗವಹಿಸುವಿಕೆ ಐಚ್ಛಿಕವಾಗಿದೆ. ನೀವು ಈ ಬಾಕ್ಸ್ ಆಯ್ಕೆ ಮಾಡಿದರೆ ಮಾತ್ರ, ಕರ್ನಾಟಕದ ಹಾವು ಗುರುತಿಸುವ ಮಾದರಿಯನ್ನು ತರಬೇತುಗೊಳಿಸಲು ಮತ್ತು ಸುಧಾರಿಸಲು ನಿಮ್ಮ ಫೋಟೋವನ್ನು ಸಂಗ್ರಹಿಸಲಾಗುತ್ತದೆ. ನೀವು ಸ್ಪಷ್ಟವಾಗಿ ಒಪ್ಪಿಗೆ ನೀಡದಿದ್ದರೆ ಫೋಟೋ ಉಳಿಸುವುದಿಲ್ಲ.',
+  'id.offlineWarning': 'ಆಫ್‌ಲೈನ್ — ಹಾವು ಗುರುತಿಸಲು ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕ ಅಗತ್ಯವಿದೆ.',
 
   'login.title': 'ಸೈನ್ ಇನ್', 'login.sub': 'ಕುಟುಂಬದ ವಿವರ ಮತ್ತು ಸಂಪರ್ಕಗಳನ್ನು ಉಳಿಸಲು ಫೋನ್ ಸಂಖ್ಯೆಯಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ.', 'login.phone': 'ಫೋನ್ ಸಂಖ್ಯೆ', 'login.send': 'ಕೋಡ್ ಕಳುಹಿಸಿ',
   'login.guest': 'ತುರ್ತು ಸಹಾಯ ಕೇಳಲು ಸೈನ್ ಇನ್ ಅಗತ್ಯವಿಲ್ಲ.', 'login.codeTitle': 'ನಿಮ್ಮ ಕೋಡ್ ನಮೂದಿಸಿ', 'login.codeSub': '{phone} ಗೆ 6 ಅಂಕಿಯ ಕೋಡ್ ಕಳುಹಿಸಿದ್ದೇವೆ.',

@@ -17,8 +17,8 @@
     },
     {
       "id": "limb-still",
-      "en": { "title": "Keep the limb still", "text": "Keep the bitten arm or leg still and lower than your heart." },
-      "kn": { "title": "ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸಬೇಡಿ", "text": "ಕಡಿತಕ್ಕೊಳಗಾದ ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸದೆ, ಹೃದಯಕ್ಕಿಂತ ಕೆಳಗೆ ಇರಿಸಿ." }
+      "en": { "title": "Keep the limb still and supported", "text": "Keep the bitten arm or leg still and lower than your heart. Support it with a loose splint (like a wooden stick or rolled cloth) without restricting blood circulation. Do not wrap or bind tightly." },
+      "kn": { "title": "ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸಬೇಡಿ, ಆಸರೆ ನೀಡಿ", "text": "ಕಡಿತಕ್ಕೊಳಗಾದ ಕೈ ಅಥವಾ ಕಾಲನ್ನು ಅಲುಗಾಡಿಸದೆ, ಹೃದಯಕ್ಕಿಂತ ಕೆಳಗೆ ಇರಿಸಿ. ರಕ್ತ ಸಂಚಾರಕ್ಕೆ ಅಡ್ಡಿಯಾಗದಂತೆ ಮರದ ಕೋಲು ಅಥವಾ ಹಲಗೆಯಿಂದ ಸಡಿಲವಾದ ಆಸರೆ (ಸ್ಪ್ಲಿಂಟ್) ನೀಡಿ. ಬಿಗಿಯಾಗಿ ಕಟ್ಟಬೇಡಿ." }
     },
     {
       "id": "remove-tight",
@@ -43,14 +43,34 @@
   ],
   "avoid": [
     {
-      "id": "no-delay",
-      "en": "Do not delay. Go to a hospital even if you feel fine.",
-      "kn": "ತಡ ಮಾಡಬೇಡಿ. ಚೆನ್ನಾಗಿದ್ದೇನೆ ಅನಿಸಿದರೂ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ."
+      "id": "no-tourniquet",
+      "en": "Do not tie a tourniquet, rope or tight band around the bitten limb. It blocks blood flow and causes severe tissue damage or gangrene.",
+      "kn": "ಕಡಿತಕ್ಕೊಳಗಾದ ಕೈ ಅಥವಾ ಕಾಲಿಗೆ ಹಗ್ಗ, ಬಟ್ಟೆ ಅಥವಾ ಬಿಗಿಯಾದ ಪಟ್ಟಿ (ಟೂರ್ನಿಕೆಟ್) ಕಟ್ಟಬೇಡಿ. ಇದು ರಕ್ತ ಸಂಚಾರ ತಡೆದು ತೀವ್ರ ಅಂಗಹಾನಿಗೆ ಕಾರಣವಾಗುತ್ತದೆ."
+    },
+    {
+      "id": "no-cut-suck",
+      "en": "Do not cut, scratch, squeeze or suck the wound. It does not remove venom and causes severe bleeding and infection.",
+      "kn": "ಗಾಯವನ್ನು ಕುಯ್ಯಬೇಡಿ, ಪರಚಬೇಡಿ, ಹಿಂಡಬೇಡಿ ಅಥವಾ ಬಾಯಿಯಿಂದ ವಿಷ ಹೀರುವ ಪ್ರಯತ್ನ ಮಾಡಬೇಡಿ. ಇದು ರಕ್ತಸ್ರಾವ ಮತ್ತು ಸೋಂಕಿಗೆ ಕಾರಣವಾಗುತ್ತದೆ."
+    },
+    {
+      "id": "no-ice-heat",
+      "en": "Do not apply ice, cold compresses, heat or chemicals to the bite. It worsens tissue damage.",
+      "kn": "ಕಡಿತದ ಜಾಗಕ್ಕೆ ಮಂಜುಗಡ್ಡೆ (ಐಸ್), ತಣ್ಣೀರು, ಶಾಖ ಅಥವಾ ರಾಸಾಯನಿಕಗಳನ್ನು ಹಾಕಬೇಡಿ. ಇದು ಗಾಯವನ್ನು ಉಲ್ಬಣಗೊಳಿಸುತ್ತದೆ."
     },
     {
       "id": "no-home-remedies",
-      "en": "Do not use home remedies or wait for a healer. They waste time.",
-      "kn": "ಮನೆಮದ್ದು ಬಳಸಬೇಡಿ ಅಥವಾ ಬೇರೆಯವರಿಗಾಗಿ ಕಾಯಬೇಡಿ. ಅದು ಸಮಯ ವ್ಯರ್ಥ ಮಾಡುತ್ತದೆ."
+      "en": "Do not use traditional remedies or wait for a healer (nati vaidya). They waste critical time—reach a hospital immediately.",
+      "kn": "ಮನೆಮದ್ದು ಬಳಸಬೇಡಿ ಅಥವಾ ನಾಟಿ ವೈದ್ಯರು ನೀಡುವ ಚಿಕಿತ್ಸೆಗಾಗಿ ಕಾಯಬೇಡಿ. ಅದು ಅಮೂಲ್ಯ ಸಮಯವನ್ನು ವ್ಯರ್ಥ ಮಾಡುತ್ತದೆ—ತಕ್ಷಣವೇ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ."
+    },
+    {
+      "id": "no-medicines",
+      "en": "Do not give medicines, painkillers, alcohol or sedatives unless directed by a qualified medical professional.",
+      "kn": "ವೈದ್ಯರ ಸಲಹೆಯಿಲ್ಲದೆ ಯಾವುದೇ ಮಾತ್ರೆ, ನೋವು ನಿವಾರಕ ಅಥವಾ ಯಾವುದೇ ಔಷಧಿಯನ್ನು ತೆಗೆದುಕೊಳ್ಳಬೇಡಿ."
+    },
+    {
+      "id": "no-delay",
+      "en": "Do not delay. Go to a hospital even if you feel fine.",
+      "kn": "ತಡ ಮಾಡಬೇಡಿ. ಚೆನ್ನಾಗಿದ್ದೇನೆ ಅನಿಸಿದರೂ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ."
     }
   ]
 }

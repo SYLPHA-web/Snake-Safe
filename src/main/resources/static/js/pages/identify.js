@@ -35,7 +35,7 @@ export default async function identify(el, ctx) {
 
     <div class="split" style="margin-top:22px">
       <section class="card" data-reveal>
-        <div class="row between" style="margin-bottom:14px"><div><div class="eyebrow">${t('id.eyebrow')}</div><h2 style="font-size:25px;margin-top:4px">${t('id.title')}</h2></div><span class="chip chip-green"><i class="dot"></i>${t('id.ready')}</span></div>
+        <div class="row between" style="margin-bottom:14px;align-items:flex-start;gap:12px"><div><div class="eyebrow">${t('id.eyebrow')}</div><h2 style="font-size:25px;margin-top:4px">${t('id.title')}</h2></div><div id="id-status"></div></div>
         <div id="panel"></div>
       </section>
       <div class="stack">
@@ -48,20 +48,47 @@ export default async function identify(el, ctx) {
     </div>`);
 
   const panel = $('#panel', el);
+  const statusEl = $('#id-status', el);
 
-  const idle = () => html`
-    <div class="dropzone" id="drop">
-      <div class="cam">${icon('camera', 26)}</div>
-      <h3 style="font-size:19px">${t('id.drop')}</h3>
-      <p class="muted small" style="max-width:380px">${t('id.dropSub')}</p>
-      <div class="dz-actions">
-        <button type="button" class="btn" data-act="camera">${icon('camera', 16)} ${t('id.camera')}</button>
-        <button type="button" class="btn btn-soft" data-act="upload">${icon('upload', 16)} ${t('id.upload')}</button>
+  const isOnline = () => (typeof navigator !== 'undefined' && 'onLine' in navigator ? navigator.onLine : true);
+
+  const renderStatus = () => {
+    if (!statusEl) return;
+    if (isOnline()) {
+      statusEl.innerHTML = toHtml(html`<span class="chip chip-green"><i class="dot"></i>${t('id.ready')}</span>`);
+    } else {
+      statusEl.innerHTML = toHtml(html`<span class="chip chip-amber" style="height:auto;padding:5px 12px;white-space:normal;line-height:1.3;max-width:320px;text-align:right">${icon('warn', 14)} <span>${t('id.offlineWarning')}</span></span>`);
+    }
+  };
+
+  const idle = () => {
+    const online = isOnline();
+    return html`
+      ${!online ? html`
+        <div class="warn-box" style="margin-bottom:14px;background:var(--amber-soft);border:1px solid var(--amber);color:var(--amber)">
+          ${icon('warn', 20)}
+          <span>${t('id.offlineWarning')}</span>
+        </div>` : ''}
+      <div class="dropzone" id="drop" style="${!online ? 'opacity:0.75' : ''}">
+        <div class="cam">${icon('camera', 26)}</div>
+        <h3 style="font-size:19px">${t('id.drop')}</h3>
+        <p class="muted small" style="max-width:380px">${t('id.dropSub')}</p>
+        <div class="dz-actions">
+          <button type="button" class="btn" data-act="camera" ${!online ? 'disabled style="opacity:0.5;cursor:not-allowed"' : ''}>${icon('camera', 16)} ${t('id.camera')}</button>
+          <button type="button" class="btn btn-soft" data-act="upload" ${!online ? 'disabled style="opacity:0.5;cursor:not-allowed"' : ''}>${icon('upload', 16)} ${t('id.upload')}</button>
+        </div>
+        <input type="file" accept="image/*" capture="environment" class="sr-only" id="in-cam" data-file tabindex="-1" aria-hidden="true" ${!online ? 'disabled' : ''}>
+        <input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" id="in-up" data-file tabindex="-1" aria-hidden="true" ${!online ? 'disabled' : ''}>
       </div>
-      <input type="file" accept="image/*" capture="environment" class="sr-only" id="in-cam" data-file tabindex="-1" aria-hidden="true">
-      <input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" id="in-up" data-file tabindex="-1" aria-hidden="true">
-    </div>
-    <div class="card-flat row" style="margin-top:14px;gap:12px">${icon('info', 20)}<span class="small">${t('id.distance')}</span></div>`;
+      <label class="card-flat row" style="margin-top:14px;gap:12px;align-items:flex-start;cursor:pointer">
+        <input type="checkbox" id="keep" style="margin-top:3px;accent-color:var(--green)">
+        <div class="small">
+          <b>${t('id.consentLabel')}</b>
+          <p class="muted xs" style="margin-top:3px;line-height:1.4">${t('id.consentSub')}</p>
+        </div>
+      </label>
+      <div class="card-flat row" style="margin-top:14px;gap:12px">${icon('info', 20)}<span class="small">${t('id.distance')}</span></div>`;
+  };
 
   const busy = () => html`<div class="locate" style="padding:30px 10px"><img class="preview-img" src="${blobUrl}" alt="" style="max-height:240px"><div class="spinner"></div><b>${t('id.analysing')}</b></div>`;
 
@@ -81,10 +108,16 @@ export default async function identify(el, ctx) {
   }
 
   const show = (h) => { panel.innerHTML = toHtml(h); ctx.motion(panel); };
+  renderStatus();
   show(idle());
 
   async function handle(file) {
     if (!file) return;
+    if (!isOnline()) {
+      toast(t('id.offlineWarning'), 'err');
+      return;
+    }
+    const keep = !!$('#keep', el)?.checked;
     if (blobUrl) URL.revokeObjectURL(blobUrl);
     blobUrl = URL.createObjectURL(file);
     show(busy());
@@ -94,8 +127,10 @@ export default async function identify(el, ctx) {
       if (!okType || file.size > 4.5 * 1024 * 1024) blob = await toJpeg(file);
       const fd = new FormData();
       fd.append('file', blob, blob.type === 'image/png' ? 'snake.png' : 'snake.jpg');
-      const keep = $('#keep', el)?.checked;
-      if (keep) fd.append('keep', 'true');
+      if (keep) {
+        fd.append('keep', 'true');
+        fd.append('consent', 'true');
+      }
       const r = await api('/api/identify', { method: 'POST', body: fd });
       if (!ctx.alive()) return;
       show(result(r));
@@ -104,6 +139,17 @@ export default async function identify(el, ctx) {
       show(idle());
     }
   }
+
+  const onConnectivityChange = () => {
+    renderStatus();
+    if ($('#drop', el)) show(idle());
+  };
+  window.addEventListener('online', onConnectivityChange);
+  window.addEventListener('offline', onConnectivityChange);
+  ctx.onCleanup(() => {
+    window.removeEventListener('online', onConnectivityChange);
+    window.removeEventListener('offline', onConnectivityChange);
+  });
 
   let stopCamera = () => {};
   ctx.onCleanup(() => stopCamera());
@@ -133,14 +179,35 @@ export default async function identify(el, ctx) {
     });
   }
 
-  el.addEventListener('change', (e) => { if (e.target.matches('[data-file]')) { const f = e.target.files[0]; e.target.value = ''; handle(f); } });
+  el.addEventListener('change', (e) => {
+    if (e.target.matches('[data-file]')) {
+      const f = e.target.files[0];
+      e.target.value = '';
+      if (!isOnline()) { toast(t('id.offlineWarning'), 'err'); return; }
+      handle(f);
+    }
+  });
   el.addEventListener('click', (e) => {
     const b = e.target.closest('[data-act]'); if (!b) return;
     if (b.dataset.act === 'again') show(idle());
-    else if (b.dataset.act === 'camera') openCamera();
-    else if (b.dataset.act === 'upload') $('#in-up', el).click();
+    else if (b.dataset.act === 'camera') {
+      if (!isOnline()) { toast(t('id.offlineWarning'), 'err'); return; }
+      openCamera();
+    }
+    else if (b.dataset.act === 'upload') {
+      if (!isOnline()) { toast(t('id.offlineWarning'), 'err'); return; }
+      $('#in-up', el).click();
+    }
   });
   ['dragenter', 'dragover'].forEach((ev) => el.addEventListener(ev, (e) => { const d = e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.add('drag'); } }));
   el.addEventListener('dragleave', (e) => { const d = e.target.closest('#drop'); if (d) d.classList.remove('drag'); });
-  el.addEventListener('drop', (e) => { const d = e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.remove('drag'); handle(e.dataTransfer.files[0]); } });
+  el.addEventListener('drop', (e) => {
+    const d = e.target.closest('#drop');
+    if (d) {
+      e.preventDefault();
+      d.classList.remove('drag');
+      if (!isOnline()) { toast(t('id.offlineWarning'), 'err'); return; }
+      handle(e.dataTransfer.files[0]);
+    }
+  });
 }

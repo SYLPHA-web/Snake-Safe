@@ -195,11 +195,19 @@ class FullFlowIntegrationTest {
 
     @Test
     void firstAidIsSafeAndTheChatAlwaysSendsBitesToEmergencyHelp() throws Exception {
-        String firstAid = call("GET", "/api/first-aid", null, null, 200).toString().toLowerCase();
-        assertThat(firstAid).contains("108", "emergency", "ಹಾವು");
-        for (String banned : List.of("tourniquet", "suck", "incision", "dose", "dosage", "mg ", "ibuprofen")) {
-            assertThat(firstAid).doesNotContain(banned);
+        JsonNode firstAid = call("GET", "/api/first-aid", null, null, 200);
+        String full = firstAid.toString().toLowerCase();
+        assertThat(full).contains("108", "emergency", "ಹಾವು");
+
+        // Positive DO instructions must not recommend harmful actions
+        String stepsText = firstAid.get("steps").toString().toLowerCase();
+        for (String banned : List.of("tourniquet", "suck", "incision", "cut", "ice", "dose", "dosage", "mg ", "ibuprofen", "pressure bandage")) {
+            assertThat(stepsText).doesNotContain(banned);
         }
+
+        // Avoid / DON'T warnings must clearly warn against dangerous traditional practices
+        String avoidText = firstAid.get("avoid").toString().toLowerCase();
+        assertThat(avoidText).contains("tourniquet", "suck", "cut", "ice", "traditional remedies", "medicines", "ನಾಟಿ ವೈದ್ಯರು");
 
         JsonNode chat = call("POST", "/api/chat", "{\"message\":\"My brother was bitten by a snake\",\"language\":\"en\"}",
                 null, 200);

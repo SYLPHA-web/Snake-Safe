@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.http.HttpStatus;
 
 import com.snakesafe.config.AppProperties;
@@ -137,5 +138,19 @@ class SupabaseStoragePhotoStorageTest {
 
         String result = storage.save("photo-456.jpg", new byte[] { 1, 2, 3 }, "image/jpeg");
         assertThat(result).isEqualTo("photo-456.jpg");
+    }
+
+    @Test
+    void springContextCanInstantiateComponentUsingAutowiredConstructor() {
+        AppProperties props = createProps("https://example.supabase.co", "test-key", "snake-photos");
+        new ApplicationContextRunner()
+                .withPropertyValues("app.photo-storage=SUPABASE")
+                .withBean(AppProperties.class, () -> props)
+                .withUserConfiguration(SupabaseStoragePhotoStorage.class)
+                .run(context -> {
+                    assertThat(context).hasNotFailed();
+                    assertThat(context).hasSingleBean(SupabaseStoragePhotoStorage.class);
+                    assertThat(context).hasSingleBean(PhotoStorage.class);
+                });
     }
 }

@@ -9,6 +9,7 @@ import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ public class SupabaseStoragePhotoStorage implements PhotoStorage {
     private final AppProperties.Supabase config;
     private final HttpClient http;
 
+    @Autowired
     public SupabaseStoragePhotoStorage(AppProperties props) {
         this(props, HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build());
     }

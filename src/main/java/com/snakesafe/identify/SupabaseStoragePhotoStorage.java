@@ -13,6 +13,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.snakesafe.config.AppProperties;
 import com.snakesafe.web.ApiException;
 
@@ -22,12 +24,19 @@ import com.snakesafe.web.ApiException;
 public class SupabaseStoragePhotoStorage implements PhotoStorage {
 
     private static final Logger log = LoggerFactory.getLogger(SupabaseStoragePhotoStorage.class);
+    private static final ObjectMapper json = new ObjectMapper();
+    static final String UNRECOGNIZED_ERROR = "Unrecognized storage error response";
 
     private final AppProperties.Supabase config;
-    private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+    private final HttpClient http;
 
     public SupabaseStoragePhotoStorage(AppProperties props) {
+        this(props, HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build());
+    }
+
+    SupabaseStoragePhotoStorage(AppProperties props, HttpClient http) {
         this.config = props.supabase();
+        this.http = http;
     }
 
     @Override
@@ -47,7 +56,8 @@ public class SupabaseStoragePhotoStorage implements PhotoStorage {
         try {
             HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() / 100 != 2) {
-                log.warn("Supabase storage upload failed with status {}", response.statusCode());
+                log.warn("Supabase storage upload failed with status {}: {}", response.statusCode(),
+                        extractErrorDetail(response.body()));
                 throw new ApiException(HttpStatus.BAD_GATEWAY, "STORAGE_ERROR", "Could not save the photo.");
             }
         } catch (IOException e) {
@@ -57,5 +67,29 @@ public class SupabaseStoragePhotoStorage implements PhotoStorage {
             throw new ApiException(HttpStatus.BAD_GATEWAY, "STORAGE_ERROR", "Could not save the photo.");
         }
         return fileName;
+    }
+
+    static String extractErrorDetail(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return UNRECOGNIZED_ERROR;
+        }
+        try {
+            JsonNode root = json.readTree(raw);
+            if (root != null && root.isObject()) {
+                String detail = null;
+                if (root.hasNonNull("error") && root.get("error").isTextual()) {
+                    detail = root.get("error").asText();
+                } else if (root.hasNonNull("message") && root.get("message").isTextual()) {
+                    detail = root.get("message").asText();
+                }
+                if (detail != null && !detail.isBlank()) {
+                    String cleaned = detail.replaceAll("[\r\n]+", " ").strip();
+                    return cleaned.length() > 200 ? cleaned.substring(0, 200) + "..." : cleaned;
+                }
+            }
+        } catch (Exception ignored) {
+            // parsing failed; fallback below
+        }
+        return UNRECOGNIZED_ERROR;
     }
 }

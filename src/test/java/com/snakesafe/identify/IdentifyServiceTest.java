@@ -29,6 +29,7 @@ class IdentifyServiceTest {
     private List<SnakeIdentifier.RawGuess> fakeGuesses;
     private SnakeIdentifier identifier;
     private AtomicBoolean photoStored;
+    private AtomicBoolean storageFails;
     private List<SnakePhoto> savedPhotos;
     private PhotoService photoService;
     private AppProperties props;
@@ -39,6 +40,7 @@ class IdentifyServiceTest {
         snakeDb = new HashMap<>();
         fakeGuesses = new ArrayList<>();
         photoStored = new AtomicBoolean(false);
+        storageFails = new AtomicBoolean(false);
         savedPhotos = new ArrayList<>();
 
         // Prepopulate snake DB with Cobra (venomous) and Rat Snake (non-venomous)
@@ -91,6 +93,10 @@ class IdentifyServiceTest {
 
         // PhotoStorage proxy to record storage calls
         PhotoStorage storage = (fileName, data, contentType) -> {
+            if (storageFails.get()) {
+                throw new com.snakesafe.web.ApiException(
+                        org.springframework.http.HttpStatus.BAD_GATEWAY, "STORAGE_ERROR", "Could not save the photo.");
+            }
             photoStored.set(true);
             return fileName;
         };
@@ -282,5 +288,28 @@ class IdentifyServiceTest {
         assertThat(kept.photoKept()).isTrue();
         assertThat(savedPhotos).hasSize(1);
         assertThat(savedPhotos.get(0).species).isEqualTo("Colubridae sp.");
+    }
+
+    @Test
+    void photoStorageFailureDoesNotAbortIdentificationAndReturnsPhotoKeptFalse() {
+        fakeGuesses.clear();
+        fakeGuesses.add(new SnakeIdentifier.RawGuess("Naja naja", "Cobra", 0.85));
+        MockMultipartFile file = new MockMultipartFile("file", "snake.jpg", "image/jpeg", VALID_JPEG);
+
+        storageFails.set(true);
+        savedPhotos.clear();
+
+        // When storage throws an exception during consented retention, identify() must succeed
+        IdentifyService.Result result = service.identify(file, true);
+
+        // Identification results must be intact and fully returned
+        assertThat(result.photoKept()).isFalse();
+        assertThat(result.guesses()).hasSize(1);
+        assertThat(result.guesses().get(0).nameEn()).isEqualTo("Spectacled Cobra");
+        assertThat(result.venomous()).isEqualTo(Venomous.YES);
+        assertThat(result.emergencyNumber()).isEqualTo("108");
+        assertThat(result.disclaimer()).isEqualTo(IdentifyService.DISCLAIMER);
+        assertThat(savedPhotos).isEmpty();
+        assertThat(photoStored.get()).isFalse();
     }
 }

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import java.nio.charset.StandardCharsets;
@@ -37,11 +38,13 @@ class IdentifyControllerTest {
     private AppProperties props;
     private RateLimiter limiter;
     private AtomicLong photoIdGen;
+    private AtomicBoolean storageFails;
     private List<SnakePhoto> savedPhotos;
 
     @BeforeEach
     void setUp() {
         photoIdGen = new AtomicLong(100);
+        storageFails = new AtomicBoolean(false);
         savedPhotos = new ArrayList<>();
 
         Map<String, Snake> snakeDb = new HashMap<>();
@@ -69,7 +72,12 @@ class IdentifyControllerTest {
 
         SnakeIdentifier stubIdentifier = new StubSnakeIdentifier(snakeRepo);
 
-        PhotoStorage storage = (fileName, data, contentType) -> fileName;
+        PhotoStorage storage = (fileName, data, contentType) -> {
+            if (storageFails.get()) {
+                throw new ApiException(HttpStatus.BAD_GATEWAY, "STORAGE_ERROR", "Could not save the photo.");
+            }
+            return fileName;
+        };
         SnakePhotoRepository photoRepo = (SnakePhotoRepository) Proxy.newProxyInstance(
                 SnakePhotoRepository.class.getClassLoader(),
                 new Class<?>[] { SnakePhotoRepository.class },
@@ -301,6 +309,26 @@ class IdentifyControllerTest {
         assertThat(savedPhotos.get(0).species).isEqualTo("Spectacled Cobra");
         assertThat(savedPhotos.get(0).source).isEqualTo("identify");
         assertThat(savedPhotos.get(0).consent).isTrue();
+    }
+
+    @Test
+    void storageFailureDuringConsentedIdentificationDoesNotFailControllerRequest() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRemoteAddr("10.0.0.9");
+        MockMultipartFile jpeg = new MockMultipartFile("file", "snake.jpg", "image/jpeg", VALID_JPEG);
+
+        storageFails.set(true);
+        savedPhotos.clear();
+
+        // User gave consent and keep=true, but backend storage failed
+        IdentifyService.Result result = controller.identify(jpeg, true, true, request);
+
+        // Crucial reliability requirement: identification succeeds, photoKept is false, and 0 photos saved
+        assertThat(result.photoKept()).isFalse();
+        assertThat(result.guesses()).isNotEmpty();
+        assertThat(result.guesses().get(0).nameEn()).isEqualTo("Spectacled Cobra");
+        assertThat(result.emergencyNumber()).isEqualTo("108");
+        assertThat(savedPhotos).isEmpty();
     }
 
     @Test

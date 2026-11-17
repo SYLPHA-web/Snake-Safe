@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +15,8 @@ import com.snakesafe.snake.SnakeRepository;
 
 @Service
 public class IdentifyService {
+
+    private static final Logger log = LoggerFactory.getLogger(IdentifyService.class);
 
     public static final String DISCLAIMER = "This may be wrong. Treat every bite as an emergency.";
 
@@ -57,8 +61,13 @@ public class IdentifyService {
             String species = top.nameEn() != null && !top.nameEn().isBlank()
                     ? top.nameEn()
                     : (top.scientificName() != null && !top.scientificName().isBlank() ? top.scientificName() : "Unidentified");
-            photos.store(image, species, "identify", true);
-            kept = true;
+            try {
+                photos.store(image, species, "identify", true);
+                kept = true;
+            } catch (Exception e) {
+                log.warn("Failed to store consented photo for research: {}", e.getMessage());
+                kept = false;
+            }
         }
         return new Result(guesses, overall(guesses), DISCLAIMER, "Call " + props.emergencyNumber(),
                 props.emergencyNumber(), identifier.mode(), kept);
